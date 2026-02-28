@@ -1,0 +1,33 @@
+{
+  "name": "thanx-qa-claude-plugins",
+  "owner": {
+    "name": "Thanx QA Chapter",
+    "email": "engineering@thanx.com"
+  },
+  "metadata": {
+    "description": "Internal Claude Code plugin marketplace for Thanx QA Chapter - shared commands, agents, and skills for QA workflows",
+    "version": "0.1.0",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "qa",
+      "source": "./plugins/qa",
+      "description": "QA-specific workflows for test suite generation, bug triage, PR QA checks, and QA automation",
+      "version": "0.1.0",
+      "author": {
+        "name": "Thanx QA Chapter",
+        "email": "engineering@thanx.com"
+      },
+      "keywords": [
+        "qa",
+        "test-suite",
+        "prd",
+        "test-generation",
+        "triage",
+        "pr-check",
+        "automation"
+      ]
+    }
+  ]
+}
