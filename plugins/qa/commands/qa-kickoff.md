@@ -105,7 +105,7 @@ Pass `prd_text` as the input. The agent returns a JSON object.
 Parse and store:
 
 - `test_suite_json` — the full JSON output
-- `test_suite_title` — the `title` field (e.g., `[DRAFT] Test Suite — Loyalty Revamp`)
+- `test_suite_title` — the `title` field (e.g., `[DRAFT] Test Suite - Loyalty Revamp`)
 - `scenario_count` — `metadata.scenarios_count`
 - `requirements` — the `requirements` array
 
@@ -130,7 +130,7 @@ Create or update the subpage using `notion-create-pages` or `notion-update-page`
 
 ### Test Suite Page Format
 
-**Title:** `[DRAFT] Test Suite — {feature name}` (from `test_suite_title`)
+**Title:** `[DRAFT] Test Suite - {feature name}` (from `test_suite_title`)
 
 **Content:**
 
@@ -198,7 +198,7 @@ Parse and store:
 - `risk_coverage_score` — from `suite_review_json.scores.risk_coverage`
 - `bdd_quality_score` — from `suite_review_json.scores.bdd_quality`
 
-After this step, the test suite title in Notion is (if `draft_removed` is true): `Test Suite — {feature name}`
+After this step, the test suite title in Notion is (if `draft_removed` is true): `Test Suite - {feature name}`
 
 ---
 

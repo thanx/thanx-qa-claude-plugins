@@ -40,7 +40,7 @@ If the URL is missing, stop:
 
 Fetch the test suite page using the Notion MCP. Extract:
 
-- `test_suite_title` — the page title (e.g., `[DRAFT] Test Suite — Loyalty Revamp`)
+- `test_suite_title` — the page title (e.g., `[DRAFT] Test Suite - Loyalty Revamp`)
 - `test_suite_page_id` — the Notion page ID
 - `test_suite_content` — the full page content as text
 

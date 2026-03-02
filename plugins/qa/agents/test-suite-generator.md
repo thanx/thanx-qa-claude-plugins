@@ -73,7 +73,7 @@ Return your response as a JSON object with the following structure. This will be
 
 ```json
 {
-  "title": "[DRAFT] Test Suite — {feature name}",
+  "title": "[DRAFT] Test Suite - {feature name}",
   "metadata": {
     "prd_title": "...",
     "generated_at": "{ISO timestamp}",

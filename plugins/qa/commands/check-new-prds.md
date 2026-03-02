@@ -40,6 +40,8 @@ This file tracks which PRD Notion page IDs have already been kicked off. It has 
 
 If the file does not exist, treat it as `{ "kicked_off": [] }`.
 
+The file may also contain a `rechecked` array (written by `/qa:recheck-prds`). Ignore it — this command only reads `kicked_off`.
+
 Store the list of already-processed page IDs as `processed_ids`.
 
 ---
