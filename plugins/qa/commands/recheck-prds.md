@@ -1,10 +1,13 @@
 ---
-description: Re-run adoption review and suite reviewer for PRDs that moved to In Progress. Detects PRD changes since the initial kickoff and updates the existing Notion subpages.
+description: Handle PRDs that moved to In Progress — runs the full kickoff for projects that skipped Technical Discovery, and re-runs adoption review + suite reviewer for projects that were already kicked off.
 ---
 
 # Recheck PRDs
 
-Scan the Notion Projects database for PRDs in `(2) In Progress` status that haven't been re-checked yet. For each one, re-run the adoption review and suite reviewer to catch any changes made to the PRD since the initial kickoff.
+Scan the Notion Projects database for PRDs in `(2) In Progress` status and handle each one appropriately:
+
+- **Never kicked off** (skipped Technical Discovery): run the full kickoff pipeline.
+- **Already kicked off**: re-run adoption review and suite reviewer to catch PRD changes.
 
 Run this when a Notion automation notifies you that a project entered In Progress.
 
@@ -39,15 +42,18 @@ It has the following structure:
 }
 ```
 
-If the file does not exist or `rechecked` is absent, treat it as an empty list.
+If the file does not exist, treat it as `{ "kicked_off": [], "rechecked": [] }`.
+If `kicked_off` or `rechecked` are absent, treat each as an empty list.
 
-Store the list of already-rechecked page IDs as `rechecked_ids`.
+Store:
+- `kicked_off_ids` — list of page IDs already in `kicked_off`
+- `rechecked_ids` — list of page IDs already in `rechecked`
 
 ---
 
 ## Step 2: Query the Projects Database
 
-Query the Notion Projects database (data source ID: `collection://0d7ef002-875f-453b-bb05-7789a3436086`) for all entries where `Status = "(2) In Progress"` and `Tests Suite Created = "__YES__"`.
+Query the Notion Projects database (data source ID: `collection://0d7ef002-875f-453b-bb05-7789a3436086`) for **all** entries where `Status = "(2) In Progress"`.
 
 Use the `notion-query-database-view` MCP tool with the following SQL:
 
@@ -56,7 +62,6 @@ SELECT url, "Name", "Status", "Product Manager", "Eng Lead", "QE",
        "Tests Suite Created", "QA - Read PRD", "Channel in slack with QA"
 FROM "collection://0d7ef002-875f-453b-bb05-7789a3436086"
 WHERE "Status" = '(2) In Progress'
-AND "Tests Suite Created" = '__YES__'
 ```
 
 If the query fails, stop and report:
@@ -66,52 +71,78 @@ Store the results as `inprogress_prds`.
 
 ---
 
-## Step 3: Filter Unrechecked PRDs
+## Step 3: Classify PRDs into Two Groups
 
-From `inprogress_prds`, exclude any entries whose Notion page ID is in `rechecked_ids`.
+For each entry in `inprogress_prds`, extract the Notion page ID from the `url` field (last segment of the URL).
 
-Store the remaining entries as `new_rechecks`.
+Split into two groups:
+
+- **`needs_kickoff`** — page ID is **not** in `kicked_off_ids`. These projects skipped Technical Discovery and never had a kickoff. They need the full pipeline.
+- **`needs_recheck`** — page ID is in `kicked_off_ids` but **not** in `rechecked_ids`. These were kicked off before and now need adoption review + suite reviewer re-run.
+
+Entries already in both `kicked_off_ids` and `rechecked_ids` are fully processed — ignore them.
 
 ---
 
 ## Step 4: Report Results
 
-If `new_rechecks` is empty:
+If both groups are empty:
 
 ```
-✅ No PRDs to recheck.
+✅ Nothing to do.
 
-{N} project(s) in In Progress — all already rechecked.
+{N} project(s) in In Progress — all already handled.
 ```
 
 Stop here.
 
 ---
 
-If `new_rechecks` is not empty, print a summary:
+If either group has entries, print a summary:
 
 ```
-🔄 {N} PRD(s) moved to In Progress — ready for recheck:
+📋 In Progress — action needed:
 
-{For each PRD:}
+🆕 Never kicked off ({N}):
+{For each PRD in needs_kickoff:}
+  {index}. {Name}
+     PM: {Product Manager}  |  Eng Lead: {Eng Lead}  |  QE: {QE}
+     Link: {url}
+
+🔄 Already kicked off — needs recheck ({N}):
+{For each PRD in needs_recheck:}
   {index}. {Name}
      PM: {Product Manager}  |  Eng Lead: {Eng Lead}  |  QE: {QE}
      Link: {url}
 ```
 
+Omit a section header if the group is empty.
+
 ---
 
-## Step 5: Offer Recheck for Each PRD
+## Step 5a: Full Kickoff for Never-Kicked-Off PRDs
 
-For each PRD in `new_rechecks`, ask:
+For each PRD in `needs_kickoff`, ask:
+
+> "{Name}" was never kicked off (skipped Technical Discovery). Run the full kickoff pipeline now? (yes / skip / stop)
+
+- **yes** — invoke `/qa:qa-kickoff` with the PRD Notion URL using the Task tool. Wait for the pipeline to complete. On success, mark as kicked off in the log (Step 10 will handle this). On failure, note the error and do not mark as processed.
+- **skip** — continue to the next PRD without running anything. Do not add to the log (it will appear again next time).
+- **stop** — exit without processing more PRDs.
+
+---
+
+## Step 5b: Offer Recheck for Already-Kicked-Off PRDs
+
+For each PRD in `needs_recheck`, ask:
 
 > Recheck adoption review and test suite for "{Name}"? (yes / skip / stop)
 
-- **yes** — re-run both agents for this PRD
+- **yes** — re-run both agents for this PRD (Steps 6–9)
 - **skip** — mark as rechecked without running
 - **stop** — exit without processing more PRDs
 
-If the user answers **yes**, execute Steps 6–8 for that PRD.
+If the user answers **yes**, execute Steps 6–9 for that PRD.
 
 ---
 
@@ -216,10 +247,13 @@ Add an entry to the `rechecked` list in `~/.qa-kickoff-log.json`:
 ## Step 11: Output Summary
 
 ```
+{For each PRD that ran full kickoff:}
+🆕 {Name} — full kickoff completed
+
 {For each rechecked PRD:}
 ♻️ {Name}
    {adoption_verdict_emoji} Adoption: {adoption_verdict}{adoption_changed_note}
    {suite_verdict_emoji} Suite: {suite_verdict}
 
-Done. Rechecked: {N}  |  Skipped: {N}
+Done. Kicked off: {N}  |  Rechecked: {N}  |  Skipped: {N}
 ```
