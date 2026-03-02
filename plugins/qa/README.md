@@ -8,6 +8,8 @@ Claude Code plugin for Thanx QA Chapter workflows.
 |---------|-------------|
 | `/qa:qa-kickoff` | Run the full QA kickoff pipeline for a Notion PRD |
 | `/qa:qa-brief` | Generate a QA Brief from a Notion PRD |
+| `/qa:adoption-review` | Review a Notion PRD for adoption criteria completeness |
+| `/qa:suite-reviewer` | Review an existing Test Suite Notion page |
 | `/qa:test-suite-prd` | Generate a [DRAFT] Test Suite from a Notion PRD |
 
 ## Agents
