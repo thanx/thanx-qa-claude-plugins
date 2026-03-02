@@ -20,7 +20,7 @@ Generate a structured `[DRAFT] Test Suite` from a Notion PRD using the Thanx QA 
 **Optional:**
 
 - Additional context links: Figma, ADRs, API docs, or free-text notes
-- Example: `/test-suite-prd https://notion.so/... https://thanxapp.atlassian.net/browse/ABC-123 https://figma.com/file/...`
+- Example: `/qa:test-suite-prd https://notion.so/... https://thanxapp.atlassian.net/browse/ABC-123 https://figma.com/file/...`
 
 ## What It Does
 
