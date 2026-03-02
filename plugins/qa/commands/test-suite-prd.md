@@ -340,13 +340,14 @@ Include any precondition that could not be confirmed.
 
 | # | Description | Type | Expected Owner | Status |
 |---|---|---|---|---|
-| 1 | {question, assumption, or limitation} | Question / Assumption / Limitation | {real name from PRD if available, otherwise: PM / Engineering / QA} | Open |
+| 1 | {question, assumption, or limitation} | Question / Assumption / Limitation | {real name from PRD if available, otherwise: PM / Engineering} | Open |
 
 When assigning Expected Owner, use the real names extracted from the PRD in Step 3b if available:
 
 - Product questions - Product Manager name (or "PM" if not found)
-- Technical questions - Eng Lead name (or "Engineering" if not found)
-- Coverage gaps - QE name (or "QA" if not found)
+- Technical questions and coverage gaps - Eng Lead name (or "Engineering" if not found)
+
+Never assign questions to the QE or QA. The QE reviews the answers from PM and Engineering.
 
 - **Question:** information missing from the PRD that affects coverage
 - **Assumption:** something treated as true because it was not specified
