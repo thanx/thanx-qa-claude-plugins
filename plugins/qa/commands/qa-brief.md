@@ -78,9 +78,11 @@ After fetching the PRD content, look for image URLs embedded in the content. The
 For each image URL found:
 
 1. Use the Bash tool to download the image to a temporary file:
+
 ```bash
 curl -s -o /tmp/notion_prd_image_N.ext "IMAGE_URL"
 ```
+
 Replace `N` with a sequential number and `ext` with the file extension from the URL (png, jpg, gif, etc.).
 
 2. Use the Read tool to analyze the downloaded image and extract all relevant information:
@@ -91,11 +93,12 @@ Replace `N` with a sequential number and `ext` with the file extension from the 
 3. Store the analysis for each image as additional context to use in Step 3.
 
 4. After all images are analyzed, delete the temporary files:
+
 ```bash
-rm -f /tmp/notion_prd_image_*
+rm -f /tmp/notion_prd_image_*.{png,jpg,gif,webp}
 ```
 
-If an image URL has expired or cannot be downloaded, skip it silently. If no images are found, continue without this step.
+If an image URL has expired or cannot be downloaded, note it as "Image not accessible (expired URL)" and continue. If no images are found, continue without this step.
 
 ---
 

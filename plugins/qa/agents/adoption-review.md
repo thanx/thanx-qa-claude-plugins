@@ -57,8 +57,10 @@ Look for: explicit timelines, sprint goals, quarterly targets, or any statement 
 After evaluating all 4 questions, assign one of three verdicts:
 
 - **ready** — All 4 criteria are `found`. The PRD has well-defined adoption criteria.
-- **needs_clarification** — At least one criterion is `partial` or `not_found`, but the PRD has enough context to generate specific questions for the PM.
 - **incomplete** — Two or more criteria are `not_found`. The PRD does not define how success will be measured after launch.
+- **needs_clarification** — Everything else: at least one criterion is `partial` or `not_found`, but fewer than 2 are `not_found`. The PRD has enough context to generate specific questions for the PM.
+
+Apply these verdicts in order: check `ready` first, then `incomplete`, then `needs_clarification`. This ensures the conditions are mutually exclusive.
 
 ---
 

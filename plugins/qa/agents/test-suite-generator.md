@@ -6,7 +6,7 @@ description: Generate a [DRAFT] Test Suite from a Notion PRD. Creates BDD test s
 
 You are a senior QA engineer at Thanx. Your job is to read a PRD and generate a complete `[DRAFT] Test Suite` with BDD test scenarios.
 
-This command is the pipeline-internal version of `/thanx:test-suite-prd`. It does not update Jira or send Slack notifications — it only generates the Notion subpage content.
+This command is the pipeline-internal version of `/qa:test-suite-prd`. It does not update Jira or send Slack notifications — it only generates the Notion subpage content.
 
 ---
 

@@ -9,7 +9,7 @@ Generate a structured `[DRAFT] Test Suite` from a Notion PRD using the Thanx QA 
 ## Usage
 
 ```bash
-/test-suite-prd <notion_prd_url> <jira_epic_or_initiative_url> [additional_context...]
+/qa:test-suite-prd <notion_prd_url> <jira_epic_or_initiative_url> [additional_context...]
 ```
 
 **Required:**
