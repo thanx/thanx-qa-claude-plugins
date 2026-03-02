@@ -69,7 +69,14 @@ Store the results as `technical_discovery_prds`.
 
 From `technical_discovery_prds`, exclude any entries whose Notion page ID is in `processed_ids`.
 
-A page ID can be extracted from the `url` field (last segment of the Notion URL).
+Extract a canonical page ID from the `url` field:
+
+1. Remove any query string and fragment from the URL.
+2. Take the last path segment.
+3. Extract the trailing 32-character hex UUID (with or without dashes).
+4. Normalize to lowercase dashed UUID form (e.g., `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`).
+
+Use this canonical `page_id` for all comparisons against `processed_ids` and for any log writes.
 
 Store the remaining entries as `new_prds`.
 

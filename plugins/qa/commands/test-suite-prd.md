@@ -119,15 +119,15 @@ curl -s -o /tmp/notion_prd_image_N.ext "IMAGE_URL"
 
 Replace `N` with a sequential number and `ext` with the file extension from the URL (png, jpg, gif, etc.).
 
-2. Use the Read tool to analyze the downloaded image and extract all relevant information:
+1. Use the Read tool to analyze the downloaded image and extract all relevant information:
    - UI layouts, flows, or wireframes
    - Labels, field names, pricing structures, or configuration examples
    - Diagrams, tables, or any visible text
    - Anything that describes expected behavior or business rules
 
-3. Store the analysis for each image as additional context to use in Step 4.
+1. Store the analysis for each image as additional context to use in Step 4.
 
-4. After all images are analyzed, delete the temporary files:
+1. After all images are analyzed, delete the temporary files:
 
 ```bash
 rm -f /tmp/notion_prd_image_*.{png,jpg,gif,webp}

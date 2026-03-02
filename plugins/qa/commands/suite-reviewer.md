@@ -61,7 +61,13 @@ If the parent page cannot be found or accessed, set `prd_text = ""` and note the
 
 ## Step 4: Fetch the QA Brief
 
-From the parent PRD page, fetch its child pages and look for one with "QA Brief" in the title.
+If the parent PRD was unavailable in Step 3 (i.e., `prd_text = ""`):
+
+- Set `qa_brief_content = ""`.
+- Note: "QA Brief lookup skipped because parent PRD was inaccessible."
+- Continue to Step 5.
+
+Otherwise, fetch the child pages of the parent PRD and look for one with "QA Brief" in the title.
 
 Fetch that page and store its full content as `qa_brief_content`.
 

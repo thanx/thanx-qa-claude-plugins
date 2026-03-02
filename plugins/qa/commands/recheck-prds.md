@@ -74,7 +74,14 @@ Store the results as `inprogress_prds`.
 
 ## Step 3: Classify PRDs into Two Groups
 
-For each entry in `inprogress_prds`, extract the Notion page ID from the `url` field (last segment of the URL).
+For each entry in `inprogress_prds`, derive a canonical page ID from the `url` field:
+
+1. Remove any query string and fragment from the URL.
+2. Take the last path segment.
+3. Extract the trailing 32-character hex UUID (with or without dashes).
+4. Normalize to lowercase dashed UUID form (e.g., `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`).
+
+Apply the same canonicalization to all IDs in `kicked_off_ids` and `rechecked_ids` before comparing.
 
 Split into two groups:
 
