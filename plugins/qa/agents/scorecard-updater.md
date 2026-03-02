@@ -46,7 +46,7 @@ Evaluate each field below and determine whether it should be updated. Only set a
 | `QA - Read PRD` | `qa_brief_created` is `true` | `__YES__` | Generating the QA Brief requires fully reading and analyzing the PRD |
 | `Tests Suite Created` | `test_suite_created` is `true` | `__YES__` | Pipeline generated the [DRAFT] Test Suite subpage in Notion |
 | `Test Suite Created 3 business days after Kickoff` | `test_suite_created` is `true` | `__YES__` | Test suite is always created before the kickoff meeting, so this is always satisfied when the suite exists |
-| `Test Suite Reviewed` | `test_suite_created` is `true` AND `test_suite_verdict` is `"ready"` | `__YES__` | Agent 4 reviewed the suite and confirmed coverage is acceptable — [DRAFT] can be removed |
+| `Test Suite Reviewed` | `test_suite_created` is `true` | `__YES__` | Agent 4 always performs the first review — checks completeness, coverage, and AI output quality. [DRAFT] is removed at this point. If the dev needs a second review after resolving open questions, they add a Notion comment tagging the QE. |
 
 ### Fields the pipeline does NOT set
 
