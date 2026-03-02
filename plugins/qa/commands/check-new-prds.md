@@ -79,7 +79,7 @@ Store the remaining entries as `new_prds`.
 
 If `new_prds` is empty:
 
-```
+```text
 ✅ No new PRDs to kick off.
 
 {N} project(s) in Technical Discovery — all already processed.
@@ -91,7 +91,7 @@ Stop here.
 
 If `new_prds` is not empty, print a summary:
 
-```
+```text
 🔍 {N} new PRD(s) in Technical Discovery:
 
 {For each PRD:}
@@ -149,7 +149,7 @@ Add a new entry for each PRD that was kicked off or skipped:
 
 ## Step 7: Output Final Summary
 
-```
+```text
 Done.
 
 Kicked off:  {N}

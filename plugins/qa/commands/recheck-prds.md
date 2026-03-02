@@ -46,6 +46,7 @@ If the file does not exist, treat it as `{ "kicked_off": [], "rechecked": [] }`.
 If `kicked_off` or `rechecked` are absent, treat each as an empty list.
 
 Store:
+
 - `kicked_off_ids` — list of page IDs already in `kicked_off`
 - `rechecked_ids` — list of page IDs already in `rechecked`
 
@@ -88,7 +89,7 @@ Entries already in both `kicked_off_ids` and `rechecked_ids` are fully processed
 
 If both groups are empty:
 
-```
+```text
 ✅ Nothing to do.
 
 {N} project(s) in In Progress — all already handled.
@@ -100,7 +101,7 @@ Stop here.
 
 If either group has entries, print a summary:
 
-```
+```text
 📋 In Progress — action needed:
 
 🆕 Never kicked off ({N}):
@@ -167,15 +168,18 @@ Use the Task tool to invoke the `adoption-review` agent with `prd_text`.
 
 The agent returns a JSON object with the updated verdict and criteria analysis.
 
-Update the existing `[ADOPTION REVIEW]` subpage in Notion (`adoption_review_page_id`) with the new results. Use the same format as `/qa:adoption-review` Step 4.
+**If `adoption_review_page_id` was found in Step 6:** update the existing `[ADOPTION REVIEW]` subpage with the new results. Use the same format as `/qa:adoption-review` Step 4.
+
+**If `adoption_review_page_id` was not found:** create a new `[ADOPTION REVIEW]` subpage under the PRD (same format as `/qa:adoption-review` Step 4) and store its page ID as `adoption_review_page_id`. Note in the output that the page was missing and was recreated.
 
 Add a note at the top of the page:
 
-```
+```text
 > ♻️ Re-checked on {current date} — project moved to In Progress.
 ```
 
 Store:
+
 - `adoption_verdict` — updated verdict
 - `adoption_changed` — `true` if the verdict differs from what was previously in the page, `false` otherwise
 
@@ -193,11 +197,13 @@ Use the Task tool to invoke the `suite-reviewer` agent with the four sections:
 4. `test_suite_content`
 
 The agent will:
+
 - Re-evaluate coverage, BDD quality, and automation tagging
 - Remove `[DRAFT]` from the test suite title if it still has it
 - Return updated verdict JSON
 
 Store:
+
 - `suite_verdict` — updated verdict
 - `suite_review_json` — full output
 
@@ -209,7 +215,7 @@ Find the project Slack channel by searching for channels whose Topic contains th
 
 If a channel is found, post:
 
-```
+```text
 ♻️ QA Recheck — {Name}
 
 Project moved to In Progress. Here's the updated status:
@@ -222,7 +228,8 @@ Test Suite: {test_suite_notion_url}
 ```
 
 Where:
-- `adoption_changed_note` is ` ⚠️ (changed since kickoff)` if `adoption_changed = true`, empty otherwise
+
+- `adoption_changed_note` is `⚠️ (changed since kickoff)` if `adoption_changed = true`, empty otherwise
 - `suite_verdict_emoji` is `✅` for `ready` or `⚠️` for `review_first`
 - `adoption_verdict_emoji` is `🟢` for `ready`, `🟡` for `needs_clarification`, `🔴` for `incomplete`
 
@@ -246,7 +253,7 @@ Add an entry to the `rechecked` list in `~/.qa-kickoff-log.json`:
 
 ## Step 11: Output Summary
 
-```
+```text
 {For each PRD that ran full kickoff:}
 🆕 {Name} — full kickoff completed
 

@@ -127,6 +127,7 @@ Identify 3-7 areas that carry the highest testing risk. For each risk:
 - **Suggest** the testing approach (e.g., "Requires E2E test with real payment flow", "Needs regression on existing merchant configs")
 
 Focus on:
+
 - Data integrity and state transitions
 - Integration points with external systems (Olo, Braze, Apple Pay, Stripe, etc.)
 - Edge cases in user flows (empty states, error states, timeouts, retries)
@@ -159,6 +160,7 @@ If the PRD is comprehensive and no open questions exist, write: "No open questio
 ### Section 5: QA Recommendation
 
 In 2-4 sentences, state the overall QA approach for this feature:
+
 - What type of testing is most critical (E2E, API, regression, exploratory)?
 - What is the recommended test entry point (UI, API, or both)?
 - Are there any blockers to starting test execution?
@@ -243,6 +245,7 @@ Before creating, fetch child pages directly from the PRD page ID using the Notio
 
 **If no existing QA Brief page is found:**
 Create a new Notion subpage under the PRD with:
+
 - Title: `📋 QA Brief - {PRD title}`
 - Content: the full brief generated in Step 4
 - Parent: the PRD page

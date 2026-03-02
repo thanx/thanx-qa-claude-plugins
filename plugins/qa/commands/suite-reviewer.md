@@ -83,11 +83,13 @@ Pass the following four sections as the input, separated by `---SECTION---`:
 Note: section 4 contains the test suite page content rather than raw JSON. The agent will parse the scenarios from the formatted page.
 
 The agent will:
+
 - Evaluate coverage, BDD quality, and automation tagging
 - Remove `[DRAFT]` from the test suite Notion page title via MCP
 - Return a JSON object with the verdict and review details
 
 Parse the result and store:
+
 - `suite_verdict` — `ready` or `review_first`
 - `draft_removed` — `true` or `false`
 - `suite_review_json` — the full JSON output
@@ -96,7 +98,7 @@ Parse the result and store:
 
 ## Step 6: Output Summary to User
 
-```
+```text
 {verdict_emoji} Suite Review — {test_suite_title}
 
 Verdict: {suite_verdict}
@@ -121,6 +123,7 @@ Test suite: {test_suite_notion_url}
 ```
 
 Where:
+
 - `verdict_emoji` is `✅` for `ready` or `⚠️` for `review_first`
 - `bdd_issues_line` is `BDD issues found: {N} — see test suite for details.` if count > 0, empty otherwise
 - `tagging_issues_line` is `Automation tagging issues: {N}` if count > 0, empty otherwise

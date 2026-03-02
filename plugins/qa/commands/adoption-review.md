@@ -82,7 +82,7 @@ Create or update the subpage using `notion-create-pages` or `notion-update-page`
 
 **Content:**
 
-```
+```text
 ## Adoption Review
 
 | Field | Value |
@@ -111,7 +111,7 @@ Create or update the subpage using `notion-create-pages` or `notion-update-page`
 
 If `questions_for_pm` is not empty, add a numbered list after the "Questions for PM" heading:
 
-```
+```text
 1. {question} _(Criterion {criterion})_
 ```
 
@@ -120,6 +120,7 @@ If `questions_for_pm` is empty, add: `None — all criteria are clearly defined 
 ---
 
 Where status emojis are:
+
 - `found` → `✅`
 - `partial` → `🟡`
 - `not_found` → `🔴`
@@ -132,7 +133,7 @@ Store the Notion subpage URL as `review_notion_url`.
 
 ## Step 5: Output Summary to User
 
-```
+```text
 {verdict_emoji} Adoption Review — {prd_title}
 
 Verdict: {verdict}
@@ -147,5 +148,6 @@ Review page: {review_notion_url}
 ```
 
 Where `questions_line` is:
+
 - `Questions for PM: {N}` if there are open questions
 - `No open questions.` if all criteria are found

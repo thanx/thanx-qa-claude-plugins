@@ -69,11 +69,12 @@ Otherwise set `skip_external_actions = false`.
 
 ## Step 4: Agent 1 — QA Brief
 
-Use the Task tool to invoke the `qa-brief` agent.
+Use the Task tool to run the `qa-brief` command.
 
 Pass the PRD URL as the argument (same URL from Step 1). The agent will read the PRD itself, create the `📋 QA Brief` subpage in Notion, and return a summary including the subpage URL and the full brief content.
 
 Store:
+
 - `qa_brief_url` — the Notion subpage URL
 - `qa_brief_content` — the full brief text
 - `qa_brief_created = true` if successful, `false` if the agent failed
@@ -87,6 +88,7 @@ Use the Task tool to invoke the `adoption-review` agent.
 Pass `prd_text` as the input. The agent returns a JSON object.
 
 Parse and store:
+
 - `adoption_verdict` — `ready`, `needs_clarification`, or `incomplete`
 - `adoption_json` — full JSON output
 
@@ -101,6 +103,7 @@ Use the Task tool to invoke the `test-suite-generator` agent.
 Pass `prd_text` as the input. The agent returns a JSON object.
 
 Parse and store:
+
 - `test_suite_json` — the full JSON output
 - `test_suite_title` — the `title` field (e.g., `[DRAFT] Test Suite — Loyalty Revamp`)
 - `scenario_count` — `metadata.scenarios_count`
@@ -131,7 +134,7 @@ Create or update the subpage using `notion-create-pages` or `notion-update-page`
 
 **Content:**
 
-```
+```text
 ## Metadata
 
 | Field | Value |
@@ -182,11 +185,13 @@ Pass the following four sections as the input, separated by `---SECTION---`:
 4. `test_suite_json` serialized as a string
 
 The agent will:
+
 - Evaluate coverage, BDD quality, and automation tagging
 - Remove `[DRAFT]` from the test suite Notion page title via MCP
 - Return a JSON object with the verdict and review details
 
 Parse and store:
+
 - `suite_verdict` — `ready` or `review_first`
 - `draft_removed` — `true` or `false`
 - `suite_review_json` — full JSON output
@@ -208,7 +213,8 @@ Create a Jira Initiative (not Epic) with:
 - **Summary:** `QA: {prd_title}`
 - **Issue Type:** Initiative
 - **Description:**
-  ```
+
+  ```text
   QA Kickoff Pipeline — automated by Claude Code.
 
   PRD: {prd_url}
@@ -217,9 +223,11 @@ Create a Jira Initiative (not Epic) with:
   Suite Verdict: {suite_verdict}
   Adoption Review: {adoption_verdict}
   ```
+
 - Set `customfield_12289` (Test Suite link) to `test_suite_notion_url`
 
 Store:
+
 - `jira_key` — the created issue key (e.g., `BG-1234`)
 - `jira_url` — the issue URL
 
@@ -244,6 +252,7 @@ If no matching channel is found, create a new channel:
 - After creating the channel, set the Topic to the PRD URL
 
 Invite the following members to the channel (look up Slack IDs by name or email if not known):
+
 - Beatriz: `U08UEQ22H7W`
 - Giovani (look up by name)
 - Lial: `U08HTSEURPH`
@@ -262,7 +271,7 @@ Skip this step if `skip_external_actions = true`.
 
 Post this message to `slack_channel_id`:
 
-```
+```text
 👋 QA Kickoff — {prd_title}
 
 The QA pipeline has run for this project.
@@ -276,6 +285,7 @@ Next step: review the QA Brief and resolve open questions with the PM and Eng Le
 ```
 
 Where:
+
 - `adoption_verdict_emoji` is `🟢` for `ready`, `🟡` for `needs_clarification`, `🔴` for `incomplete`
 - `jira_line` is `🎯 Jira: {jira_url}` if Jira was created, empty otherwise
 
@@ -321,7 +331,7 @@ Skip this step if `skip_external_actions = true`.
 
 Post this message to `slack_channel_id`:
 
-```
+```text
 🧪 Test Suite ready — {prd_title}
 
 {suite_verdict_emoji} Suite verdict: {suite_verdict}
@@ -331,6 +341,7 @@ Post this message to `slack_channel_id`:
 ```
 
 Where:
+
 - `suite_verdict_emoji` is `✅` for `ready`, `⚠️` for `review_first`
 - `missing_note` is empty for `ready`, or `⚠️ {N} risk areas have coverage gaps — see the test suite for details.` for `review_first`
 
@@ -340,7 +351,7 @@ Where:
 
 Find the `#qa-test-suites-bot` Slack channel and post:
 
-```
+```text
 🚀 QA Kickoff complete — {prd_title}
 
 {suite_verdict_emoji} Suite: {suite_verdict}  {adoption_verdict_emoji} Adoption: {adoption_verdict}
@@ -355,6 +366,7 @@ Eng Lead: {eng_lead_name} | PM: {pm_name} | QE: {qe_name}
 ```
 
 Where:
+
 - `jira_line` is `🎯 Jira: {jira_url}` if created, empty otherwise
 - `channel_line` is `💬 Channel: #{slack_channel_name}` if found/created, empty otherwise
 - `guardrail_note` is `⚠️ Jira and Slack channel skipped — Eng Lead not set in PRD.` if `skip_external_actions = true`, empty otherwise
@@ -365,7 +377,7 @@ Where:
 
 Print the final pipeline summary:
 
-```
+```text
 ✅ QA Kickoff complete — {prd_title}
 
 📋 QA Brief: {qa_brief_url}
@@ -380,7 +392,7 @@ QA Scorecard updated on PRD.
 
 If any step failed, list failures at the end:
 
-```
+```text
 ⚠️ The following steps failed and require manual action:
 - {step name}: {reason}
 ```
