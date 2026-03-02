@@ -6,6 +6,7 @@ Claude Code plugin for Thanx QA Chapter workflows.
 
 | Command | Description |
 |---------|-------------|
+| `/qa:check-new-prds` | Check for new PRDs in Technical Discovery and offer to kick them off |
 | `/qa:qa-kickoff` | Run the full QA kickoff pipeline for a Notion PRD |
 | `/qa:qa-brief` | Generate a QA Brief from a Notion PRD |
 | `/qa:adoption-review` | Review a Notion PRD for adoption criteria completeness |
