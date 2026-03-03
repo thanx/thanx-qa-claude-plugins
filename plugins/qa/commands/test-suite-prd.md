@@ -437,7 +437,7 @@ Then apply the following decision rules:
 
 **If creating a new page** (no existing test suite, or approved-only exists):
 
-- Always use the PRD page ID as the `parent_id`. Never use any other page as the parent.
+- Use `notion-create-pages` with `parent: { "type": "page_id", "page_id": "{prd_page_id}" }`. Do NOT use `parent_id` — it is not a valid parameter and will cause the page to be created at workspace root.
 - The title must be: `[DRAFT] Test Suite - {feature name from PRD title}`
 - Write the full generated content from Step 4 as the page body
 - Do not delete or modify any other existing subpage of the PRD

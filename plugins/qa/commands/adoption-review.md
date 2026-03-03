@@ -72,7 +72,15 @@ Apply this guardrail:
   > Found {N} existing [ADOPTION REVIEW] pages under this PRD: {titles and URLs}
   > Please delete or consolidate them manually before running this command again.
 
-Create or update the subpage using `notion-create-pages` or `notion-update-page` with the following format:
+When creating (no existing page found), use `notion-create-pages` with:
+
+- `parent: { "type": "page_id", "page_id": "{prd_page_id}" }` — this sets the parent correctly. Do NOT use `parent_id`.
+- `pages[0].properties.title`: `[ADOPTION REVIEW] {prd_title}`
+- `pages[0].content`: the formatted content below
+
+When updating, use `notion-update-page` with `command: "replace_content"`.
+
+Format the page content as follows:
 
 ---
 
