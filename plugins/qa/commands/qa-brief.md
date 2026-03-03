@@ -79,15 +79,16 @@ For each image URL found:
 
 1. Extract the file extension from the image URL. Only proceed if the extension is one of: `png`, `jpg`, `jpeg`, `gif`, `webp`, `svg`. If the extension is not in this list, skip the image and note: "Skipped image N - unsupported file type: {ext}".
 
-1. Use the Bash tool to download the image to a temporary file with safety limits:
+1. Use the Bash tool to download the image to a temporary file with safety limits. If the download fails, skip the image and continue:
 
 ```bash
-curl -s --max-time 30 --max-filesize 10485760 -o /tmp/notion_prd_image_N.ext "IMAGE_URL"
+curl -sf --location --max-time 30 --max-filesize 10485760 \
+  -o /tmp/notion_prd_image_N.ext "IMAGE_URL"
 ```
 
-Replace `N` with a sequential number and `ext` with the validated file extension. The flags prevent hanging on slow servers (30s timeout) and reject files larger than 10 MB.
+Replace `N` with a sequential number and `ext` with the validated file extension. The flags prevent hanging on slow servers (30s timeout) and reject files larger than 10 MB. If curl exits with a non-zero status, delete the partial file, note: "Image not accessible (download failed)", and skip to the next image.
 
-1. After downloading, verify the file is actually an image by checking its MIME type:
+1. After a successful download, verify the file is actually an image by checking its MIME type:
 
 ```bash
 file --mime-type -b /tmp/notion_prd_image_N.ext
