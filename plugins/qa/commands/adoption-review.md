@@ -80,8 +80,6 @@ When creating (no existing page found), use `notion-create-pages` with:
 
 When updating, use `notion-update-page` with `command: "replace_content"`.
 
----
-
 Format the page content as follows:
 
 ---
