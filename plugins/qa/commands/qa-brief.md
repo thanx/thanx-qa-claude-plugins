@@ -77,13 +77,24 @@ After fetching the PRD content, look for image URLs embedded in the content. The
 
 For each image URL found:
 
-1. Use the Bash tool to download the image to a temporary file:
+1. Extract the file extension from the image URL. Only proceed if the extension is one of: `png`, `jpg`, `jpeg`, `gif`, `webp`, `svg`. If the extension is not in this list, skip the image and note: "Skipped image N - unsupported file type: {ext}".
+
+1. Use the Bash tool to download the image to a temporary file with safety limits. If the download fails, skip the image and continue:
 
 ```bash
-curl -s -o /tmp/notion_prd_image_N.ext "IMAGE_URL"
+curl -sf --location --max-time 30 --max-filesize 10485760 \
+  -o /tmp/notion_prd_image_N.ext "IMAGE_URL"
 ```
 
-Replace `N` with a sequential number and `ext` with the file extension from the URL (png, jpg, gif, etc.).
+Replace `N` with a sequential number and `ext` with the validated file extension. The flags prevent hanging on slow servers (30s timeout) and reject files larger than 10 MB. If curl exits with a non-zero status, delete the partial file, note: "Image not accessible (download failed)", and skip to the next image.
+
+1. After a successful download, verify the file is actually an image by checking its MIME type:
+
+```bash
+file --mime-type -b /tmp/notion_prd_image_N.ext
+```
+
+The output must start with `image/` (e.g. `image/png`, `image/jpeg`). If it does not, delete the file, skip the image, and note: "Skipped image N - content is not an image (MIME: {actual type})".
 
 1. Use the Read tool to analyze the downloaded image and extract all relevant information:
    - UI layouts, user flows, or wireframes that reveal testable behavior
@@ -92,11 +103,13 @@ Replace `N` with a sequential number and `ext` with the file extension from the 
 
 1. Store the analysis for each image as additional context to use in Step 3.
 
-1. After all images are analyzed, delete the temporary files:
+1. After all images are analyzed (or if any download/analysis fails), always delete the temporary files:
 
 ```bash
-rm -f /tmp/notion_prd_image_*.{png,jpg,gif,webp}
+rm -f /tmp/notion_prd_image_*.{png,jpg,jpeg,gif,webp,svg}
 ```
+
+Always run this cleanup, even if image analysis was interrupted by an error or timeout.
 
 If an image URL has expired or cannot be downloaded, note it as "Image not accessible (expired URL)" and continue. If no images are found, continue without this step.
 

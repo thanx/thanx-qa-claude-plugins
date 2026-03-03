@@ -67,6 +67,42 @@ Run `npm test` before every PR. Tests validate:
 - Markdown structure (title heading, no trailing whitespace, no consecutive blank lines)
 - Link validity (internal and external)
 
+## Configuration
+
+Hardcoded identifiers used across commands.
+When team members or infrastructure changes, update this section and the corresponding command files.
+
+### Slack User IDs
+
+| Name | Slack User ID | Used in |
+|------|---------------|---------|
+| Beatriz | `U08UEQ22H7W` | `qa-kickoff.md` (Step 9), `test-suite-prd.md` (Step 7) |
+| Giovani | `U08UEQ5MJDA` | `test-suite-prd.md` (Step 7) |
+| Lial | `U08HTSEURPH` | `qa-kickoff.md` (Step 9) |
+
+### Notion Database IDs
+
+| Database | ID | Used in |
+|----------|-----|---------|
+| Projects database | `collection://0d7ef002-875f-453b-bb05-7789a3436086` | `check-new-prds.md` (Step 2), `recheck-prds.md` (Step 2) |
+
+### Jira IDs
+
+| Identifier | Value | Used in |
+|------------|-------|---------|
+| Jira Cloud ID | `7d5d6532-069d-419b-bd1c-d8321b134435` | `test-suite-prd.md` (Step 2) |
+| Test Suite link field | `customfield_12289` | `test-suite-prd.md` (Step 6), `qa-kickoff.md` (Step 8) |
+
+### Environment Variables
+
+| Variable | Purpose | Used in |
+|----------|---------|---------|
+| `QA_SLACK_WEBHOOK_URL` | Incoming webhook for QA Slack channel notifications | `test-suite-prd.md` (Step 7) |
+
+**Update protocol:** When any value changes, update this table first,
+then update each file listed in the "Used in" column.
+Run `grep` across `plugins/` for the old value to catch missed references.
+
 ## Error Correction Log
 
 When Claude makes a repeated mistake in this repo, add it here.
