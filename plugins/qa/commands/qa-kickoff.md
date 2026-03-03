@@ -4,7 +4,7 @@ description: Run the full QA kickoff pipeline for a Notion PRD. Generates QA Bri
 
 # QA Kickoff Pipeline
 
-Orchestrate the full QA kickoff for a project: five agents running in sequence, from QA Brief to Scorecard Update.
+Orchestrate the full QA kickoff for a project: five agents, with QA Brief and Adoption Review running in parallel, followed by Test Suite generation, Suite Review, and Scorecard Update.
 
 ## Usage
 
@@ -67,36 +67,27 @@ Otherwise set `skip_external_actions = false`.
 
 ---
 
-## Step 4: Agent 1 — QA Brief
+## Step 4: Agents 1 & 2 — QA Brief + Adoption Review (parallel)
 
-Use the Task tool to run the `qa-brief` command.
+Use the Task tool to invoke **both agents simultaneously** in a single step.
 
-Pass the PRD URL as the argument (same URL from Step 1). The agent will read the PRD itself, create the `📋 QA Brief` subpage in Notion, and return a summary including the subpage URL and the full brief content.
+**Agent 1 — QA Brief:** Run the `qa-brief` command, passing the PRD URL as the argument. The agent reads the PRD, creates the `📋 QA Brief` subpage in Notion, and returns a summary including the subpage URL and full brief content.
 
-Store:
+**Agent 2 — Adoption Review:** Invoke the `adoption-review` agent, passing `prd_text` as the input. The agent evaluates the PRD against the 4 adoption criteria and returns a JSON object.
+
+Wait for both to complete, then store:
 
 - `qa_brief_url` — the Notion subpage URL
 - `qa_brief_content` — the full brief text
 - `qa_brief_created = true` if successful, `false` if the agent failed
-
----
-
-## Step 5: Agent 2 — Adoption Review
-
-Use the Task tool to invoke the `adoption-review` agent.
-
-Pass `prd_text` as the input. The agent returns a JSON object.
-
-Parse and store:
-
 - `adoption_verdict` — `ready`, `needs_clarification`, or `incomplete`
 - `adoption_json` — full JSON output
 
-If the agent fails, set `adoption_verdict = "unknown"` and continue.
+If the adoption review agent fails, set `adoption_verdict = "unknown"` and continue.
 
 ---
 
-## Step 6: Agent 3 — Test Suite Generator
+## Step 5: Agent 3 — Test Suite Generator
 
 Use the Task tool to invoke the `test-suite-generator` agent.
 
@@ -109,11 +100,11 @@ Parse and store:
 - `scenario_count` — `metadata.scenarios_count`
 - `requirements` — the `requirements` array
 
-If the agent fails, set `test_suite_created = false` and skip Steps 7 and 8.
+If the agent fails, set `test_suite_created = false` and skip Steps 6 and 7.
 
 ---
 
-## Step 7: Create Test Suite Notion Subpage
+## Step 6: Create Test Suite Notion Subpage
 
 Fetch child pages from the PRD page ID. Look for pages with "Test Suite" in the title.
 
@@ -173,7 +164,7 @@ Set `test_suite_created = true`.
 
 ---
 
-## Step 8: Agent 4 — Suite Reviewer
+## Step 7: Agent 4 — Suite Reviewer
 
 Use the Task tool to invoke the `suite-reviewer` agent.
 
@@ -202,7 +193,7 @@ After this step, the test suite title in Notion is (if `draft_removed` is true):
 
 ---
 
-## Step 9: Create Jira Initiative
+## Step 8: Create Jira Initiative
 
 Skip this step if `skip_external_actions = true`. Note the skip.
 
@@ -235,7 +226,7 @@ If Jira creation fails or no project key is found, set `jira_key = ""` and note 
 
 ---
 
-## Step 10: Find or Create Slack Channel
+## Step 9: Find or Create Slack Channel
 
 Skip this step if `skip_external_actions = true`. Note the skip.
 
@@ -265,7 +256,7 @@ If channel creation or invite fails, note the failure and continue.
 
 ---
 
-## Step 11: Post Kickoff Message to Project Channel
+## Step 10: Post Kickoff Message to Project Channel
 
 Skip this step if `skip_external_actions = true`.
 
@@ -291,7 +282,7 @@ Where:
 
 ---
 
-## Step 12: Agent 5 — Scorecard Updater
+## Step 11: Agent 5 — Scorecard Updater
 
 Use the Task tool to invoke the `scorecard-updater` agent.
 
@@ -313,7 +304,7 @@ The agent returns a JSON object with `notion_page_id` and `properties` to apply.
 
 ---
 
-## Step 13: Update PRD Notion Scorecard
+## Step 12: Update PRD Notion Scorecard
 
 Apply the property updates from the `scorecard-updater` agent to the PRD Notion page.
 
@@ -325,7 +316,7 @@ If the update fails, note the failure and continue.
 
 ---
 
-## Step 14: Post Final Message to Project Channel
+## Step 13: Post Final Message to Project Channel
 
 Skip this step if `skip_external_actions = true`.
 
@@ -347,7 +338,7 @@ Where:
 
 ---
 
-## Step 15: Post Summary to #qa-test-suites-bot
+## Step 14: Post Summary to #qa-test-suites-bot
 
 Find the `#qa-test-suites-bot` Slack channel and post:
 
@@ -373,7 +364,7 @@ Where:
 
 ---
 
-## Step 16: Output Summary to User
+## Step 15: Output Summary to User
 
 Print the final pipeline summary:
 
