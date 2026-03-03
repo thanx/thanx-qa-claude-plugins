@@ -56,6 +56,8 @@ Store:
 
 Query the Notion Projects database (data source ID: `collection://0d7ef002-875f-453b-bb05-7789a3436086`) for **all** entries where `Status = "(2) In Progress"`.
 
+> **Config note:** This database ID is documented in CLAUDE.md > Configuration. Update both locations if the Notion database changes.
+
 Use the `notion-query-database-view` MCP tool with the following SQL:
 
 ```sql
@@ -162,7 +164,7 @@ From the PRD's child pages, find:
 
 - The `📋 QA Brief` subpage → store its content as `qa_brief_content`
 - The `Test Suite` page (title contains "Test Suite", does not need to start with `[DRAFT]`) → store its URL as `test_suite_notion_url` and content as `test_suite_content`
-- The `[ADOPTION REVIEW]` subpage → store its Notion page ID as `adoption_review_page_id`
+- The `[ADOPTION REVIEW]` subpage(s) - if exactly one is found, store its Notion page ID as `adoption_review_page_id`. If two or more are found, store all page IDs as `adoption_review_page_ids` (list) and set `adoption_review_duplicate = true`. If none found, set `adoption_review_page_id = ""`.
 
 If the QA Brief is not found, set `qa_brief_content = ""` and note the gap.
 If the Test Suite is not found, skip the suite reviewer step and note it.
@@ -175,9 +177,14 @@ Use the Task tool to invoke the `adoption-review` agent with `prd_text`.
 
 The agent returns a JSON object with the updated verdict and criteria analysis.
 
-**If `adoption_review_page_id` was found in Step 6:** update the existing `[ADOPTION REVIEW]` subpage with the new results. Use the same format as `/qa:adoption-review` Step 4.
+**If exactly one `[ADOPTION REVIEW]` page was found in Step 6:** update the existing subpage with the new results. Use the same format as `/qa:adoption-review` Step 4.
 
-**If `adoption_review_page_id` was not found:** create a new `[ADOPTION REVIEW]` subpage under the PRD (same format as `/qa:adoption-review` Step 4) and store its page ID as `adoption_review_page_id`. Note in the output that the page was missing and was recreated.
+**If no `[ADOPTION REVIEW]` page was found:** create a new `[ADOPTION REVIEW]` subpage under the PRD (same format as `/qa:adoption-review` Step 4) and store its page ID as `adoption_review_page_id`. Note in the output that the page was missing and was recreated.
+
+**If two or more `[ADOPTION REVIEW]` pages were found (`adoption_review_duplicate = true`):** skip the page update and report:
+> Warning: Found {N} existing [ADOPTION REVIEW] pages under this PRD. Skipping page update - please consolidate them manually.
+
+Continue to Step 8 with the adoption verdict from the agent (the agent output is still valid even if the Notion page update is skipped).
 
 Add a note at the top of the page:
 

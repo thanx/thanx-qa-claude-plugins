@@ -50,6 +50,8 @@ Store the list of already-processed page IDs as `processed_ids`.
 
 Query the Notion Projects database (data source ID: `collection://0d7ef002-875f-453b-bb05-7789a3436086`) for all entries where `Status = "(2.5) Technical discovery"`.
 
+> **Config note:** This database ID is documented in CLAUDE.md > Configuration. Update both locations if the Notion database changes.
+
 Use the `notion-query-database-view` MCP tool with the following SQL:
 
 ```sql

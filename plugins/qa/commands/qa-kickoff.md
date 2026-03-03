@@ -87,6 +87,70 @@ If the adoption review agent fails, set `adoption_verdict = "unknown"` and conti
 
 ---
 
+## Step 4b: Create [ADOPTION REVIEW] Notion Subpage
+
+Create a Notion subpage under the PRD with the adoption review results from Agent 2.
+
+First, fetch child pages directly from `prd_page_id`. Look for any with "[ADOPTION REVIEW]" in the title.
+
+Apply this guardrail:
+
+- **No existing [ADOPTION REVIEW] page:** create a new subpage
+- **One [ADOPTION REVIEW] page found:** update it in place
+- **Two or more found:** skip page creation and note in the output:
+  > Warning: Found {N} existing [ADOPTION REVIEW] pages. Skipping update - please consolidate manually.
+
+Create or update the subpage with the following format:
+
+**Title:** `[ADOPTION REVIEW] {prd_title}`
+
+**Content:**
+
+```text
+## Adoption Review
+
+| Field | Value |
+|---|---|
+| Verdict | {verdict_emoji} {adoption_verdict} |
+| Generated | {current timestamp} |
+| Source PRD | {prd_url} |
+
+> {summary from adoption_json}
+
+---
+
+## Criteria Analysis
+
+| # | Question | Status | Finding |
+|---|---|---|---|
+| 1 | Expected customer behavior post-launch | {status_emoji} {status} | {finding} |
+| 2 | Adoption signal | {status_emoji} {status} | {finding} |
+| 3 | Value metric or evidence | {status_emoji} {status} | {finding} |
+| 4 | Expected timeframe | {status_emoji} {status} | {finding} |
+
+---
+
+## Questions for PM
+```
+
+If `questions_for_pm` from `adoption_json` is not empty, add a numbered list:
+
+```text
+1. {question} _(Criterion {criterion})_
+```
+
+If `questions_for_pm` is empty, add: `None - all criteria are clearly defined in the PRD.`
+
+Where status emojis are: `found` = `✅`, `partial` = `🟡`, `not_found` = `🔴`
+
+Store the Notion subpage URL as `adoption_review_url`.
+
+If `adoption_verdict = "unknown"` (agent failed in Step 4), skip this step.
+
+If page creation fails, set `adoption_review_url = ""` and note the failure in the output. Continue.
+
+---
+
 ## Step 5: Agent 3 — Test Suite Generator
 
 Use the Task tool to invoke the `test-suite-generator` agent.
@@ -250,6 +314,8 @@ Invite the following members to the channel (look up Slack IDs by name or email 
 - `eng_lead_name` (look up by name or email)
 - `pm_name` (look up by name or email)
 
+> **Config note:** Slack User IDs are documented in CLAUDE.md > Configuration. Update both locations when team members change.
+
 Store `slack_channel_id` and `slack_channel_name`. Set `slack_channel_created = true`.
 
 If channel creation or invite fails, note the failure and continue.
@@ -269,7 +335,8 @@ The QA pipeline has run for this project.
 
 📄 PRD: {prd_url}
 📋 QA Brief: {qa_brief_url}
-✅ Adoption Review: {adoption_verdict_emoji} {adoption_verdict}
+📊 Adoption Review: {adoption_verdict_emoji} {adoption_verdict}
+{adoption_review_line}
 {jira_line}
 
 Next step: review the QA Brief and resolve open questions with the PM and Eng Lead before the kickoff meeting.
@@ -278,6 +345,7 @@ Next step: review the QA Brief and resolve open questions with the PM and Eng Le
 Where:
 
 - `adoption_verdict_emoji` is `🟢` for `ready`, `🟡` for `needs_clarification`, `🔴` for `incomplete`
+- `adoption_review_line` is `Page: {adoption_review_url}` (indented with 3 spaces) if `adoption_review_url` is not empty, empty otherwise
 - `jira_line` is `🎯 Jira: {jira_url}` if Jira was created, empty otherwise
 
 ---
@@ -372,6 +440,7 @@ Print the final pipeline summary:
 ✅ QA Kickoff complete — {prd_title}
 
 📋 QA Brief: {qa_brief_url}
+📊 Adoption Review: {adoption_review_url}
 🧪 Test Suite: {test_suite_notion_url}
 {suite_verdict_emoji} Suite verdict: {suite_verdict}
 {adoption_verdict_emoji} Adoption Review: {adoption_verdict}

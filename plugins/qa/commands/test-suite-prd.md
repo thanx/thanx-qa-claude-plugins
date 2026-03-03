@@ -72,6 +72,8 @@ Extract:
 - Current value of the `Test Suite link` field (if set, note it - the command will overwrite it)
 - Jira cloud ID: `7d5d6532-069d-419b-bd1c-d8321b134435`
 
+> **Config note:** Jira Cloud ID and custom field IDs are documented in CLAUDE.md > Configuration. Update both locations if Jira configuration changes.
+
 If the Jira issue is not found or not accessible, continue and surface this as a non-blocking error at the end.
 
 ---
@@ -82,8 +84,8 @@ Fetch the main PRD page using the Notion MCP.
 
 Then fetch each subpage found under the PRD:
 
-- Look for linked child pages in the PRD content
-- Fetch each one individually
+- Use the Notion MCP to fetch child pages directly from the PRD page ID (not just linked pages in the content body - Notion child pages can exist without being linked inline, e.g. if created via the sidebar)
+- Fetch each child page individually
 - Consolidate all content before generating
 
 For each additional context link provided by the user:
@@ -111,13 +113,15 @@ After fetching the PRD content, look for image URLs embedded in the content. The
 
 For each image URL found:
 
-1. Use the Bash tool to download the image to a temporary file:
+1. Extract the file extension from the image URL. Only proceed if the extension is one of: `png`, `jpg`, `jpeg`, `gif`, `webp`, `svg`. If the extension is not in this list, skip the image and note it in Section 10 as "Skipped image N - unsupported file type: {ext}".
+
+1. Use the Bash tool to download the image to a temporary file with safety limits:
 
 ```bash
-curl -s -o /tmp/notion_prd_image_N.ext "IMAGE_URL"
+curl -s --max-time 30 --max-filesize 10485760 -o /tmp/notion_prd_image_N.ext "IMAGE_URL"
 ```
 
-Replace `N` with a sequential number and `ext` with the file extension from the URL (png, jpg, gif, etc.).
+Replace `N` with a sequential number and `ext` with the validated file extension. The flags prevent hanging on slow servers (30s timeout) and reject files larger than 10 MB.
 
 1. Use the Read tool to analyze the downloaded image and extract all relevant information:
    - UI layouts, flows, or wireframes
@@ -127,13 +131,15 @@ Replace `N` with a sequential number and `ext` with the file extension from the 
 
 1. Store the analysis for each image as additional context to use in Step 4.
 
-1. After all images are analyzed, delete the temporary files:
+1. After all images are analyzed (or if any download/analysis fails), always delete the temporary files:
 
 ```bash
-rm -f /tmp/notion_prd_image_*.{png,jpg,gif,webp}
+rm -f /tmp/notion_prd_image_*.{png,jpg,jpeg,gif,webp,svg}
 ```
 
-If an image URL has expired or cannot be downloaded, skip it silently and continue - do not stop the command. Note it in Section 10 as "Image not accessible (expired URL)".
+Always run this cleanup, even if image analysis was interrupted by an error or timeout.
+
+If an image URL has expired or cannot be downloaded, skip it and continue - do not stop the command. Note it in Section 10 as "Image not accessible (expired URL)".
 
 If no images are found in the PRD, continue without this step.
 
@@ -489,6 +495,8 @@ If the QE field was extracted from the PRD in Step 3b, append a mention at the e
 - If QE name contains "Beatriz" (case-insensitive) - append: `<@U08UEQ22H7W> this one's yours to review.`
 - If QE name contains "Giovani" (case-insensitive) - append: `<@U08UEQ5MJDA> this one's yours to review.`
 - If QE name is empty or does not match either - do not append any mention
+
+> **Config note:** Slack User IDs are documented in CLAUDE.md > Configuration. Update both locations when team members change.
 
 Use `jq` to safely encode the JSON payload, then pipe to curl:
 

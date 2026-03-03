@@ -1,6 +1,6 @@
 {
   "name": "qa",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "QA-specific workflows for test suite generation from Notion PRDs, bug triage, PR QA assessments, and QA automation patterns.",
   "author": {
     "name": "Thanx QA Chapter",

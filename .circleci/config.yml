@@ -39,7 +39,7 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
       - run:
           name: Run markdown linting
-          command: npm run lint:md || true
+          command: npm run lint:md
 
   link-checking:
     docker:
