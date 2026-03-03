@@ -184,7 +184,11 @@ Apply this guardrail:
 - **One approved Test Suite page found (title does not start with `[DRAFT]`):** create a new `[DRAFT] Test Suite` subpage
 - **Multiple Test Suite pages found:** create a new subpage and note the conflict in the output
 
-Create or update the subpage using `notion-create-pages` or `notion-update-page`. Use the following format for the page content:
+When creating a new subpage, use `notion-create-pages` with `parent: { "type": "page_id", "page_id": "{prd_page_id}" }`. Do NOT use `parent_id` — it is not a valid parameter and will cause the page to be created at workspace root.
+
+When updating, use `notion-update-page` with `command: "replace_content"`.
+
+Use the following format for the page content:
 
 ---
 

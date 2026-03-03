@@ -257,11 +257,11 @@ Using the analysis from Step 3, format the QA Brief following the structure belo
 Before creating, fetch child pages directly from the PRD page ID using the Notion MCP and look for any with "QA Brief" in the title. Do not rely on links found in the PRD content — a prior brief page may exist as a sidebar child without being linked inline.
 
 **If no existing QA Brief page is found:**
-Create a new Notion subpage under the PRD with:
+Create a new Notion subpage under the PRD using `notion-create-pages` with:
 
-- Title: `📋 QA Brief - {PRD title}`
-- Content: the full brief generated in Step 4
-- Parent: the PRD page
+- `parent: { "type": "page_id", "page_id": "{prd_page_id}" }` — this sets the parent correctly. Do NOT use `parent_id`.
+- `pages[0].properties.title`: `📋 QA Brief - {PRD title}`
+- `pages[0].content`: the full brief generated in Step 4
 
 **If exactly one QA Brief page is found:**
 Update it in place - replace the full content with the new brief. Do not create a new page.
