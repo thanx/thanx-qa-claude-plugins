@@ -9,7 +9,7 @@ Generate a structured `[DRAFT] Test Suite` from a Notion PRD using the Thanx QA 
 ## Usage
 
 ```bash
-/test-suite-prd <notion_prd_url> <jira_epic_or_initiative_url> [additional_context...]
+/qa:test-suite-prd <notion_prd_url> <jira_epic_or_initiative_url> [additional_context...]
 ```
 
 **Required:**
@@ -20,7 +20,7 @@ Generate a structured `[DRAFT] Test Suite` from a Notion PRD using the Thanx QA 
 **Optional:**
 
 - Additional context links: Figma, ADRs, API docs, or free-text notes
-- Example: `/test-suite-prd https://notion.so/... https://thanxapp.atlassian.net/browse/ABC-123 https://figma.com/file/...`
+- Example: `/qa:test-suite-prd https://notion.so/... https://thanxapp.atlassian.net/browse/ABC-123 https://figma.com/file/...`
 
 ## What It Does
 
@@ -119,15 +119,15 @@ curl -s -o /tmp/notion_prd_image_N.ext "IMAGE_URL"
 
 Replace `N` with a sequential number and `ext` with the file extension from the URL (png, jpg, gif, etc.).
 
-2. Use the Read tool to analyze the downloaded image and extract all relevant information:
+1. Use the Read tool to analyze the downloaded image and extract all relevant information:
    - UI layouts, flows, or wireframes
    - Labels, field names, pricing structures, or configuration examples
    - Diagrams, tables, or any visible text
    - Anything that describes expected behavior or business rules
 
-3. Store the analysis for each image as additional context to use in Step 4.
+1. Store the analysis for each image as additional context to use in Step 4.
 
-4. After all images are analyzed, delete the temporary files:
+1. After all images are analyzed, delete the temporary files:
 
 ```bash
 rm -f /tmp/notion_prd_image_*.{png,jpg,gif,webp}
@@ -340,13 +340,14 @@ Include any precondition that could not be confirmed.
 
 | # | Description | Type | Expected Owner | Status |
 |---|---|---|---|---|
-| 1 | {question, assumption, or limitation} | Question / Assumption / Limitation | {real name from PRD if available, otherwise: PM / Engineering / QA} | Open |
+| 1 | {question, assumption, or limitation} | Question / Assumption / Limitation | {real name from PRD if available, otherwise: PM / Engineering} | Open |
 
 When assigning Expected Owner, use the real names extracted from the PRD in Step 3b if available:
 
 - Product questions - Product Manager name (or "PM" if not found)
-- Technical questions - Eng Lead name (or "Engineering" if not found)
-- Coverage gaps - QE name (or "QA" if not found)
+- Technical questions and coverage gaps - Eng Lead name (or "Engineering" if not found)
+
+Never assign questions to the QE or QA. The QE reviews the answers from PM and Engineering.
 
 - **Question:** information missing from the PRD that affects coverage
 - **Assumption:** something treated as true because it was not specified

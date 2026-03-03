@@ -6,7 +6,24 @@ Claude Code plugin for Thanx QA Chapter workflows.
 
 | Command | Description |
 |---------|-------------|
+| `/qa:check-new-prds` | Check for new PRDs in Technical Discovery and offer to kick them off |
+| `/qa:recheck-prds` | Re-run adoption review and suite reviewer for PRDs that moved to In Progress |
+| `/qa:qa-kickoff` | Run the full QA kickoff pipeline for a Notion PRD |
+| `/qa:qa-brief` | Generate a QA Brief from a Notion PRD |
+| `/qa:adoption-review` | Review a Notion PRD for adoption criteria completeness |
+| `/qa:suite-reviewer` | Review an existing Test Suite Notion page |
 | `/qa:test-suite-prd` | Generate a [DRAFT] Test Suite from a Notion PRD |
+
+## Agents
+
+Internal agents launched via `Task()` from commands. Not user-invocable directly.
+
+| Agent | Description |
+|-------|-------------|
+| `adoption-review` | Headless adoption criteria analysis — returns JSON |
+| `test-suite-generator` | Headless test suite generation — returns JSON |
+| `suite-reviewer` | Reviews test suite coverage and BDD quality, removes [DRAFT] from Notion title — returns JSON |
+| `scorecard-updater` | Headless scorecard field resolver — returns Notion property updates |
 
 ## Adding New Commands
 
