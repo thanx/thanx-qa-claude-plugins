@@ -177,16 +177,18 @@ Use the Task tool to invoke the `adoption-review` agent with `prd_text`.
 
 The agent returns a JSON object with the updated verdict and criteria analysis.
 
-**If exactly one `[ADOPTION REVIEW]` page was found in Step 6:** update the existing subpage with the new results. Use the same format as `/qa:adoption-review` Step 4.
+**If exactly one `[ADOPTION REVIEW]` page was found in Step 6:** update the existing subpage with the new results. Use the same format as `/qa:adoption-review` Step 4. Set `adoption_page_updated = true`.
 
 **If no `[ADOPTION REVIEW]` page was found:** create a new `[ADOPTION REVIEW]` subpage under the PRD (same format as `/qa:adoption-review` Step 4) and store its page ID as `adoption_review_page_id`. Note in the output that the page was missing and was recreated.
 
-**If two or more `[ADOPTION REVIEW]` pages were found (`adoption_review_duplicate = true`):** skip the page update and report:
+**If two or more `[ADOPTION REVIEW]` pages were found (`adoption_review_duplicate = true`):** skip the page update, set `adoption_page_updated = false`, and report:
 > Warning: Found {N} existing [ADOPTION REVIEW] pages under this PRD. Skipping page update - please consolidate them manually.
 
 Continue to Step 8 with the adoption verdict from the agent (the agent output is still valid even if the Notion page update is skipped).
 
-Add a note at the top of the page:
+**If no `[ADOPTION REVIEW]` page was found (created from scratch):** set `adoption_page_updated = true` and `adoption_changed = false` (no prior verdict to compare against).
+
+If `adoption_page_updated = true`, add a note at the top of the page:
 
 ```text
 > ♻️ Re-checked on {current date} — project moved to In Progress.
@@ -195,7 +197,7 @@ Add a note at the top of the page:
 Store:
 
 - `adoption_verdict` — updated verdict
-- `adoption_changed` — `true` if the verdict differs from what was previously in the page, `false` otherwise
+- `adoption_changed` — `true` if the verdict differs from what was previously in the page, `false` if the page was new or the verdict is unchanged
 
 ---
 

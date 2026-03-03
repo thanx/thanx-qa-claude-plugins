@@ -87,6 +87,14 @@ curl -s --max-time 30 --max-filesize 10485760 -o /tmp/notion_prd_image_N.ext "IM
 
 Replace `N` with a sequential number and `ext` with the validated file extension. The flags prevent hanging on slow servers (30s timeout) and reject files larger than 10 MB.
 
+1. After downloading, verify the file is actually an image by checking its MIME type:
+
+```bash
+file --mime-type -b /tmp/notion_prd_image_N.ext
+```
+
+The output must start with `image/` (e.g. `image/png`, `image/jpeg`). If it does not, delete the file, skip the image, and note: "Skipped image N - content is not an image (MIME: {actual type})".
+
 1. Use the Read tool to analyze the downloaded image and extract all relevant information:
    - UI layouts, user flows, or wireframes that reveal testable behavior
    - Labels, error states, edge cases, or boundary conditions visible in mockups

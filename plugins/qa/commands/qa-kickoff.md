@@ -91,6 +91,11 @@ If the adoption review agent fails, set `adoption_verdict = "unknown"` and conti
 
 Create a Notion subpage under the PRD with the adoption review results from Agent 2.
 
+Initialize defaults before branching:
+
+- `adoption_review_url = ""`
+- `adoption_page_updated = false`
+
 First, fetch child pages directly from `prd_page_id`. Look for any with "[ADOPTION REVIEW]" in the title.
 
 Apply this guardrail:
