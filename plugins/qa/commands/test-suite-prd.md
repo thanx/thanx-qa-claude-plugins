@@ -72,7 +72,8 @@ Extract:
 - Current value of the `Test Suite link` field (if set, note it - the command will overwrite it)
 - Jira cloud ID: `7d5d6532-069d-419b-bd1c-d8321b134435`
 
-> **Config note:** Jira Cloud ID and custom field IDs are documented in CLAUDE.md > Configuration. Update both locations if Jira configuration changes.
+> **Config note:** Jira Cloud ID and custom field IDs are documented in CLAUDE.md > Configuration. Update both
+> locations if Jira configuration changes.
 
 If the Jira issue is not found or not accessible, continue and surface this as a non-blocking error at the end.
 
@@ -84,7 +85,8 @@ Fetch the main PRD page using the Notion MCP.
 
 Then fetch each subpage found under the PRD:
 
-- Use the Notion MCP to fetch child pages directly from the PRD page ID (not just linked pages in the content body - Notion child pages can exist without being linked inline, e.g. if created via the sidebar)
+- Use the Notion MCP to fetch child pages directly from the PRD page ID (not just linked pages in the content
+  body - Notion child pages can exist without being linked inline, e.g. if created via the sidebar)
 - Fetch each child page individually
 - Consolidate all content before generating
 
@@ -105,7 +107,8 @@ Look for the following properties in the Notion PRD page metadata:
 - **Eng Lead** - the engineering lead for this project
 - **QE** - the QA engineer assigned to this project
 
-These fields are optional. If any are missing or empty, store them as empty strings and continue - do not stop or surface an error.
+These fields are optional. If any are missing or empty, store them as empty strings and continue - do not stop
+or surface an error.
 
 ### 3c: Analyze images from the PRD
 
@@ -113,16 +116,21 @@ After fetching the PRD content, look for image URLs embedded in the content. The
 
 For each image URL found:
 
-1. Extract the file extension from the image URL. Only proceed if the extension is one of: `png`, `jpg`, `jpeg`, `gif`, `webp`, `svg`. If the extension is not in this list, skip the image and note it in Section 10 as "Skipped image N - unsupported file type: {ext}".
+1. Extract the file extension from the image URL. Only proceed if the extension is one of: `png`, `jpg`, `jpeg`,
+   `gif`, `webp`, `svg`. If the extension is not in this list, skip the image and note it in Section 10 as
+   "Skipped image N - unsupported file type: {ext}".
 
-1. Use the Bash tool to download the image to a temporary file with safety limits. If the download fails, skip the image and continue:
+1. Use the Bash tool to download the image to a temporary file with safety limits. If the download fails, skip
+   the image and continue:
 
 ```bash
 curl -sf --location --max-time 30 --max-filesize 10485760 \
   -o /tmp/notion_prd_image_N.ext "IMAGE_URL"
 ```
 
-Replace `N` with a sequential number and `ext` with the validated file extension. The flags prevent hanging on slow servers (30s timeout) and reject files larger than 10 MB. If curl exits with a non-zero status, delete the partial file, note it in Section 10 as "Image not accessible (download failed)", and skip to the next image.
+Replace `N` with a sequential number and `ext` with the validated file extension. The flags prevent hanging on
+slow servers (30s timeout) and reject files larger than 10 MB. If curl exits with a non-zero status, delete the
+partial file, note it in Section 10 as "Image not accessible (download failed)", and skip to the next image.
 
 1. After a successful download, verify the file is actually an image by checking its MIME type:
 
@@ -130,7 +138,8 @@ Replace `N` with a sequential number and `ext` with the validated file extension
 file --mime-type -b /tmp/notion_prd_image_N.ext
 ```
 
-The output must start with `image/` (e.g. `image/png`, `image/jpeg`). If it does not, delete the file, skip the image, and note it in Section 10 as "Skipped image N - content is not an image (MIME: {actual type})".
+The output must start with `image/` (e.g. `image/png`, `image/jpeg`). If it does not, delete the file, skip the
+image, and note it in Section 10 as "Skipped image N - content is not an image (MIME: {actual type})".
 
 1. Use the Read tool to analyze the downloaded image and extract all relevant information:
    - UI layouts, flows, or wireframes
@@ -148,7 +157,8 @@ rm -f /tmp/notion_prd_image_*.{png,jpg,jpeg,gif,webp,svg}
 
 Always run this cleanup, even if image analysis was interrupted by an error or timeout.
 
-If an image URL has expired or cannot be downloaded, skip it and continue - do not stop the command. Note it in Section 10 as "Image not accessible (expired URL)".
+If an image URL has expired or cannot be downloaded, skip it and continue - do not stop the command. Note it in
+Section 10 as "Image not accessible (expired URL)".
 
 If no images are found in the PRD, continue without this step.
 
@@ -156,7 +166,8 @@ If no images are found in the PRD, continue without this step.
 
 ## Step 4: Generate the Test Suite
 
-Using the full PRD content (main page + subpages + image analyses from Step 3c + accessible additional context), generate the test suite following the structure below.
+Using the full PRD content (main page + subpages + image analyses from Step 3c + accessible additional context),
+generate the test suite following the structure below.
 
 Apply these writing rules throughout:
 
@@ -437,7 +448,8 @@ Then apply the following decision rules:
 
 **If creating a new page** (no existing test suite, or approved-only exists):
 
-- Use `notion-create-pages` with `parent: { "type": "page_id", "page_id": "{prd_page_id}" }`. Do NOT use `parent_id` — it is not a valid parameter and will cause the page to be created at workspace root.
+- Use `notion-create-pages` with `parent: { "type": "page_id", "page_id": "{prd_page_id}" }`. Do NOT use
+  `parent_id` — it is not a valid parameter and will cause the page to be created at workspace root.
 - The title must be: `[DRAFT] Test Suite - {feature name from PRD title}`
 - Write the full generated content from Step 4 as the page body
 - Do not delete or modify any other existing subpage of the PRD
@@ -457,7 +469,8 @@ In both cases, capture the Notion page URL for use in Steps 6 and 7.
 
 Update the `Test Suite link` field on the Jira issue with the Notion subpage URL.
 
-Always overwrite this field with the URL of the newly created or updated `[DRAFT]` page, regardless of any previous value. Do not skip this step because a value already exists.
+Always overwrite this field with the URL of the newly created or updated `[DRAFT]` page, regardless of any
+previous value. Do not skip this step because a value already exists.
 
 The field ID for `Test Suite link` is `customfield_12289`. Use this directly - do not fetch edit metadata to discover it.
 
@@ -483,7 +496,8 @@ Send a notification to the QA Slack channel after the Notion subpage is created 
 
 Use the Bash tool to POST to the Incoming Webhook:
 
-- Webhook URL: Read from the `QA_SLACK_WEBHOOK_URL` environment variable. If not set, skip this step and surface it as a non-blocking error.
+- Webhook URL: Read from the `QA_SLACK_WEBHOOK_URL` environment variable. If not set, skip this step and surface
+  it as a non-blocking error.
 
 Build the message text using Slack mrkdwn format:
 
@@ -540,6 +554,7 @@ Open questions requiring owner assignment: {count}
 UNCOVERED requirements: {count} (if any)
 ```
 
-If there are UNCOVERED requirements, list them explicitly and remind the user they must be addressed before the suite can be approved.
+If there are UNCOVERED requirements, list them explicitly and remind the user they must be addressed before the
+suite can be approved.
 
 If any non-blocking errors occurred (Jira or Slack), list them clearly so the user can follow up manually.

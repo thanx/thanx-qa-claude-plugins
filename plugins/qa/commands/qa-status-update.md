@@ -62,14 +62,17 @@ Fetch the PRD page and extract:
 From child pages, locate and read each artifact:
 
 **QA Brief:**
+
 - `qa_brief_exists` = true/false
 - `qa_brief_url` if found
 
 **Adoption Review:**
+
 - `adoption_verdict` = `ready`, `needs_clarification`, `incomplete`, `missing`
 - `adoption_review_url` if found
 
 **Test Suite:**
+
 - `suite_status` = `approved`, `draft`, `missing`
 - `suite_verdict` = `ready` or `review_first` (from content)
 - `risk_coverage_score` — if present in content
@@ -108,7 +111,8 @@ For each project, post the update if **any** of the following apply:
 - `days_since_last_qe_update > 5` (more than 5 days with no QE message)
 - `last_qe_message_date = "never"`
 
-If `slack_channel_found = false`: do **not** post — record the gap in the output summary as a missing channel. This is separate from the posting decision above.
+If `slack_channel_found = false`: do **not** post — record the gap in the output summary as a missing channel.
+This is separate from the posting decision above.
 
 If `scope = "all"` and none of the posting conditions above apply, skip the project and note:
 > {prd_title} — skipped (last QE update {N} days ago, no changes to report)
@@ -165,13 +169,16 @@ Where `release_date_inline` is `· 📅 {N} days to release` if set and future, 
 
 ### Shared field definitions
 
-- `release_date_line` — `📅 Release: {release_date} ({N} days away)` if future; `📅 Release: {release_date} (⚠️ overdue by {N} days)` if past; omit if not set
+- `release_date_line` — `📅 Release: {release_date} ({N} days away)` if future;
+  `📅 Release: {release_date} (⚠️ overdue by {N} days)` if past; omit if not set
 - `qa_brief_emoji` — `✅` if exists, `🔴` if not
 - `qa_brief_label` — `{qa_brief_url}` or `missing`
 - `adoption_emoji` — `🟢` ready, `🟡` needs_clarification, `🔴` incomplete/missing
 - `suite_emoji` — `✅` approved, `⚠️` draft, `🔴` missing
 - `suite_label` — `approved — {test_suite_notion_url}` / `draft — {test_suite_notion_url}` / `missing`
-- `suite_scores_line` — `   {suite_verdict_emoji} {suite_verdict} | 🎯 {risk_coverage_score}% coverage | ✍️ {bdd_quality_score}% BDD` if available; omit if not
+
+- `suite_scores_line` — `{suite_verdict_emoji} {suite_verdict} | 🎯 {risk_coverage_score}% coverage |
+  ✍️ {bdd_quality_score}% BDD` if available; omit if not
 - `suite_verdict_emoji` — `✅` ready, `⚠️` review_first
 - `data_initiative_line` — `🎯 Jira: {data_initiative_url}` if available; omit if not found
 - `last_qe_update_line` — `{N} days ago — {last_qe_message_summary}` or `never — no QE message found`

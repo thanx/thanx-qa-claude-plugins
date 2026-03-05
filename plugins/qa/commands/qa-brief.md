@@ -6,7 +6,8 @@ description: Generate a QA Brief from a Notion PRD. Identifies risk areas, integ
 
 Analyze a Notion PRD and generate a `📋 QA Brief` subpage that summarizes what the QE needs to know before writing test scenarios.
 
-The QA Brief is a planning artifact — not a test suite. It identifies risk areas, external integrations that need test coverage, and open questions the team must resolve before testing begins.
+The QA Brief is a planning artifact — not a test suite. It identifies risk areas, external integrations that need
+test coverage, and open questions the team must resolve before testing begins.
 
 This is a QA-internal command. It does not update Jira, send Slack notifications, or involve any third parties.
 
@@ -54,7 +55,8 @@ Fetch the main PRD page using the Notion MCP.
 
 Then fetch each subpage found under the PRD:
 
-- Use the Notion MCP to fetch child pages directly from the PRD page ID (not just linked pages in the content body — Notion child pages can exist without being linked inline, e.g. if created via the sidebar)
+- Use the Notion MCP to fetch child pages directly from the PRD page ID (not just linked pages in the content
+  body — Notion child pages can exist without being linked inline, e.g. if created via the sidebar)
 - Fetch each child page individually
 - Consolidate all content before analyzing
 
@@ -77,16 +79,21 @@ After fetching the PRD content, look for image URLs embedded in the content. The
 
 For each image URL found:
 
-1. Extract the file extension from the image URL. Only proceed if the extension is one of: `png`, `jpg`, `jpeg`, `gif`, `webp`, `svg`. If the extension is not in this list, skip the image and note: "Skipped image N - unsupported file type: {ext}".
+1. Extract the file extension from the image URL. Only proceed if the extension is one of: `png`, `jpg`, `jpeg`,
+   `gif`, `webp`, `svg`. If the extension is not in this list, skip the image and note: "Skipped image N -
+   unsupported file type: {ext}".
 
-1. Use the Bash tool to download the image to a temporary file with safety limits. If the download fails, skip the image and continue:
+1. Use the Bash tool to download the image to a temporary file with safety limits. If the download fails, skip
+   the image and continue:
 
 ```bash
 curl -sf --location --max-time 30 --max-filesize 10485760 \
   -o /tmp/notion_prd_image_N.ext "IMAGE_URL"
 ```
 
-Replace `N` with a sequential number and `ext` with the validated file extension. The flags prevent hanging on slow servers (30s timeout) and reject files larger than 10 MB. If curl exits with a non-zero status, delete the partial file, note: "Image not accessible (download failed)", and skip to the next image.
+Replace `N` with a sequential number and `ext` with the validated file extension. The flags prevent hanging on
+slow servers (30s timeout) and reject files larger than 10 MB. If curl exits with a non-zero status, delete the
+partial file, note: "Image not accessible (download failed)", and skip to the next image.
 
 1. After a successful download, verify the file is actually an image by checking its MIME type:
 
@@ -94,7 +101,8 @@ Replace `N` with a sequential number and `ext` with the validated file extension
 file --mime-type -b /tmp/notion_prd_image_N.ext
 ```
 
-The output must start with `image/` (e.g. `image/png`, `image/jpeg`). If it does not, delete the file, skip the image, and note: "Skipped image N - content is not an image (MIME: {actual type})".
+The output must start with `image/` (e.g. `image/png`, `image/jpeg`). If it does not, delete the file, skip the
+image, and note: "Skipped image N - content is not an image (MIME: {actual type})".
 
 1. Use the Read tool to analyze the downloaded image and extract all relevant information:
    - UI layouts, user flows, or wireframes that reveal testable behavior
@@ -111,7 +119,8 @@ rm -f /tmp/notion_prd_image_*.{png,jpg,jpeg,gif,webp,svg}
 
 Always run this cleanup, even if image analysis was interrupted by an error or timeout.
 
-If an image URL has expired or cannot be downloaded, note it as "Image not accessible (expired URL)" and continue. If no images are found, continue without this step.
+If an image URL has expired or cannot be downloaded, note it as "Image not accessible (expired URL)" and continue.
+If no images are found, continue without this step.
 
 ---
 
@@ -123,21 +132,25 @@ Apply these writing rules:
 
 - Use plain English. Write short, direct sentences.
 - Do not use the em dash character (—). Use a hyphen or rewrite the sentence.
-- Be specific. Generic risks (e.g., "performance issues") are not useful. Name the specific flow or data path at risk.
+- Be specific. Generic risks (e.g., "performance issues") are not useful. Name the specific flow or data path
+  at risk.
 - Never invent behavior. If something is unclear, document it as an open question.
 - Distinguish clearly between: what is stated in the PRD / what can be inferred / what is missing.
 
 ### Section 1: Feature Summary
 
-Write 2-3 sentences summarizing what this feature does and who it is for. Be specific — avoid marketing language. State what changes for the customer or merchant, and what system behavior changes.
+Write 2-3 sentences summarizing what this feature does and who it is for. Be specific — avoid marketing language.
+State what changes for the customer or merchant, and what system behavior changes.
 
 ### Section 2: Risk Areas
 
 Identify 3-7 areas that carry the highest testing risk. For each risk:
 
-- **Name** the risk area (e.g., "Reward deduction on failed orders", "Backward compatibility with existing loyalty configs")
+- **Name** the risk area (e.g., "Reward deduction on failed orders", "Backward compatibility with existing
+  loyalty configs")
 - **Explain** why it is risky from a QA perspective (data integrity, state transitions, integrations, permissions)
-- **Suggest** the testing approach (e.g., "Requires E2E test with real payment flow", "Needs regression on existing merchant configs")
+- **Suggest** the testing approach (e.g., "Requires E2E test with real payment flow", "Needs regression on
+  existing merchant configs")
 
 Focus on:
 
@@ -154,21 +167,25 @@ List every external system, API, or internal service that this feature touches. 
 
 - **Name** - What the system is
 - **How it is used** - What this feature sends to or receives from it
-- **Testing note** - Sandbox available / Requires credentials / Already covered in E2E suite / No test environment available
+- **Testing note** - Sandbox available / Requires credentials / Already covered in E2E suite / No test environment
+  available
 
 If no external integrations are mentioned in the PRD, state that explicitly.
 
 ### Section 4: Open Questions
 
-List questions the QE needs answered before writing or executing tests. These must be specific and actionable — not general curiosity.
+List questions the QE needs answered before writing or executing tests. These must be specific and actionable —
+not general curiosity.
 
 Format each as a question with a designated owner:
 
 - Questions for **PM** - about expected behavior, edge cases, acceptance criteria, or business rules
 - Questions for **Eng Lead** - about implementation details, error handling, retry logic, or data contracts
-- Questions for **QE** - internal reminders or dependencies on other test work (e.g., "Check if test data for X already exists in sandbox")
+- Questions for **QE** - internal reminders or dependencies on other test work (e.g., "Check if test data for X
+  already exists in sandbox")
 
-If the PRD is comprehensive and no open questions exist, write: "No open questions identified - PRD covers all relevant QA concerns."
+If the PRD is comprehensive and no open questions exist, write: "No open questions identified - PRD covers all
+relevant QA concerns."
 
 ### Section 5: QA Recommendation
 
@@ -201,7 +218,8 @@ Using the analysis from Step 3, format the QA Brief following the structure belo
 | Source PRD | {Notion PRD URL} |
 | PRD last updated | {Notion last edited date if available} |
 
-> This brief is a starting point. The QE should validate open questions with the PM and Eng Lead before finalizing the test plan.
+> This brief is a starting point. The QE should validate open questions with the PM and Eng Lead before
+> finalizing the test plan.
 
 ---
 
@@ -254,7 +272,9 @@ Using the analysis from Step 3, format the QA Brief following the structure belo
 
 ## Step 5: Create or Update the QA Brief Subpage in Notion
 
-Before creating, fetch child pages directly from the PRD page ID using the Notion MCP and look for any with "QA Brief" in the title. Do not rely on links found in the PRD content — a prior brief page may exist as a sidebar child without being linked inline.
+Before creating, fetch child pages directly from the PRD page ID using the Notion MCP and look for any with
+"QA Brief" in the title. Do not rely on links found in the PRD content — a prior brief page may exist as a
+sidebar child without being linked inline.
 
 **If no existing QA Brief page is found:**
 Create a new Notion subpage under the PRD using `notion-create-pages` with:

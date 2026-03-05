@@ -6,7 +6,8 @@ description: Review a Notion PRD for adoption criteria completeness. Analyzes th
 
 Analyze a Notion PRD and evaluate whether it defines adoption criteria clearly enough to measure feature success after launch.
 
-This command is the standalone version of the `adoption-review` pipeline agent. It fetches the PRD from Notion, runs the analysis, and creates an `[ADOPTION REVIEW]` subpage with the results.
+This command is the standalone version of the `adoption-review` pipeline agent. It fetches the PRD from Notion,
+runs the analysis, and creates an `[ADOPTION REVIEW]` subpage with the results.
 
 ## Usage
 

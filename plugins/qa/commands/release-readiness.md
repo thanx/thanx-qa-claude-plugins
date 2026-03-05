@@ -34,7 +34,8 @@ Parse the first argument:
 
 **If searching by name:**
 
-Query the Notion Projects database (data source ID: `collection://0d7ef002-875f-453b-bb05-7789a3436086`) for entries where `Name` contains the argument (case-insensitive).
+Query the Notion Projects database (data source ID: `collection://0d7ef002-875f-453b-bb05-7789a3436086`) for
+entries where `Name` contains the argument (case-insensitive).
 
 > **Config note:** This database ID is documented in CLAUDE.md > Configuration.
 
@@ -113,12 +114,14 @@ Read the PRD Notion page properties and extract:
 
 ## Step 4: Check Open Bugs in the DATA Jira Initiative
 
-All projects at Thanx live in the DATA board. The QA kickoff creates an initiative in the DATA project — this is the source of truth for open issues on this project.
+All projects at Thanx live in the DATA board. The QA kickoff creates an initiative in the DATA project — this is
+the source of truth for open issues on this project.
 
 Find the DATA initiative for this project:
 
 - Look for `jira_key` from the PRD metadata or any `[QA Kickoff]` note in the PRD content
-- If not found in the PRD, search Jira: `project = DATA AND summary ~ "{prd_title}" AND issuetype = Initiative ORDER BY created DESC`
+- If not found in the PRD, search Jira: `project = DATA AND summary ~ "{prd_title}" AND issuetype = Initiative
+  ORDER BY created DESC`
 - Store as `data_initiative_key` (e.g., `DATA-123`) and `data_initiative_url`
 - If still not found: `data_initiative_key = ""`, note the gap and skip sub-steps below
 
@@ -153,14 +156,18 @@ If found: read the last 7 days of messages from the channel.
 Extract:
 
 **Test execution signals** — messages from devs or QEs mentioning test results:
-- Keywords: "tested", "test passed", "test failed", "bug", "looks good", "LGTM", "verified", "confirmed", "done testing", "ready for QA", "QA done"
+
+- Keywords: "tested", "test passed", "test failed", "bug", "looks good", "LGTM", "verified", "confirmed",
+  "done testing", "ready for QA", "QA done"
 - Store as `test_signals` — list of `{author, date, summary}` (max 5 most recent)
 
 **Last QE message** — most recent message from Beatriz (`U08UEQ22H7W`) or Giovani (`U08UEQ5MJDA`):
+
 - Store `last_qe_message_date` and `last_qe_message_summary`
 - If none found: `last_qe_message_date = "never"`
 
 **Blockers mentioned in chat** — messages about blockers, unresolved issues, or critical problems:
+
 - Store as `slack_blockers` — list of `{author, date, summary}` (max 3)
 
 > **Config note:** QE Slack User IDs are documented in CLAUDE.md > Configuration.
@@ -172,6 +179,7 @@ Extract:
 Evaluate all signals:
 
 **NOT READY** if any of the following:
+
 - `qa_brief_exists = false`
 - `suite_status` is `missing` or `draft`
 - `suite_verdict = "review_first"`
@@ -181,6 +189,7 @@ Evaluate all signals:
 - `adoption_verdict` is `incomplete`, `missing`, or `unknown`
 
 **CONDITIONAL GO** if any of the following (and none of the NOT READY conditions apply):
+
 - `open_questions_count > 0`
 - `bugs_high > 0`
 - `adoption_verdict = "needs_clarification"`
@@ -233,7 +242,8 @@ Where:
 
 - `verdict_emoji` — `✅` for `go`, `⚠️` for `conditional_go`, `🔴` for `not_ready`
 - `verdict_label` — `GO`, `CONDITIONAL GO`, `NOT READY`
-- `release_date_line` — `📅 Release date: {release_date} ({N} days away)` if set; `(⚠️ overdue by N days)` if past; `📅 Release date: not set` if empty
+- `release_date_line` — `📅 Release date: {release_date} ({N} days away)` if set; `(⚠️ overdue by N days)` if
+  past; `📅 Release date: not set` if empty
 - `qa_brief_emoji` — `✅` if exists, `🔴` if not
 - `qa_brief_label` — `exists — {qa_brief_url}` or `MISSING`
 - `adoption_emoji` — `🟢` ready, `🟡` needs_clarification, `🔴` incomplete/missing

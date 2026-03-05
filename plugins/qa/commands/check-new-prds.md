@@ -4,7 +4,8 @@ description: Check for new PRDs in Technical Discovery status that haven't been 
 
 # Check New PRDs
 
-Scan the Notion Projects database for PRDs in `(2.5) Technical discovery` status that haven't been kicked off yet. For each new one, offer to run the full QA kickoff pipeline.
+Scan the Notion Projects database for PRDs in `(2.5) Technical discovery` status that haven't been kicked off yet.
+For each new one, offer to run the full QA kickoff pipeline.
 
 Run this at the start of your day or whenever a Notion automation notifies you that a project entered Technical Discovery.
 
@@ -48,9 +49,11 @@ Store the list of already-processed page IDs as `processed_ids`.
 
 ## Step 2: Query the Projects Database
 
-Query the Notion Projects database (data source ID: `collection://0d7ef002-875f-453b-bb05-7789a3436086`) for all entries where `Status = "(2.5) Technical discovery"`.
+Query the Notion Projects database (data source ID: `collection://0d7ef002-875f-453b-bb05-7789a3436086`) for all
+entries where `Status = "(2.5) Technical discovery"`.
 
-> **Config note:** This database ID is documented in CLAUDE.md > Configuration. Update both locations if the Notion database changes.
+> **Config note:** This database ID is documented in CLAUDE.md > Configuration. Update both locations if the
+> Notion database changes.
 
 Use the `notion-query-database-view` MCP tool with the following SQL:
 

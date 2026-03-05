@@ -8,6 +8,7 @@ Capture what this session taught, patch what can be improved, and leave the
 QA plugin measurably better for the next session.
 
 **Input (`$ARGUMENTS`):**
+
 - Optional scope hint: `commands`, `agents`, `skills`, or `all` (default: `all`)
 - Optional max changes: `max=N` (default: 5)
 - If empty, runs full-session audit and proposes up to 5 changes
@@ -50,7 +51,8 @@ Sort each proposed improvement by target:
 
 ## Step 3: Propose Changes
 
-For each improvement, show the exact diff. If `max=N` was provided in `$ARGUMENTS`, limit proposals to the top N by impact. Otherwise default to 5.
+For each improvement, show the exact diff. If `max=N` was provided in `$ARGUMENTS`, limit proposals to the top N
+by impact. Otherwise default to 5.
 
 ```text
 ### Target: <file_path>
@@ -71,7 +73,8 @@ For each improvement, show the exact diff. If `max=N` was provided in `$ARGUMENT
 
 ## Step 4: Apply (With Approval)
 
-Present all proposed changes as a numbered list, capped at the max from `$ARGUMENTS` (default 5). Wait for explicit approval before applying.
+Present all proposed changes as a numbered list, capped at the max from `$ARGUMENTS` (default 5). Wait for
+explicit approval before applying.
 
 Format:
 

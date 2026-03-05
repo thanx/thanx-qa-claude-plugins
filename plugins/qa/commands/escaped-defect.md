@@ -90,7 +90,8 @@ For each bug in `production_bugs`, determine:
 
 ### 4c: PRD scope check
 
-- If `associated_project` found: read the PRD and check whether the behavior that broke was mentioned anywhere — as a requirement, edge case, or assumption
+- If `associated_project` found: read the PRD and check whether the behavior that broke was mentioned anywhere —
+  as a requirement, edge case, or assumption
 - `in_prd_scope` = `true` if the behavior was described or implied in the PRD
 - `in_prd_scope` = `false` if the behavior was not anticipated in the PRD at all
 - `scope_notes` = brief description of what was or was not in scope
@@ -166,7 +167,8 @@ If `total_bugs = 0`:
 
 ## Step 6: Log to Bug Impact Record
 
-For each bug where `escape_type` is not `unknown`, append to `wins/bug-impact-log.md` (relative to the current workspace/project root).
+For each bug where `escape_type` is not `unknown`, append to `wins/bug-impact-log.md` (relative to the current
+workspace/project root).
 
 If the file does not exist, create it with:
 
