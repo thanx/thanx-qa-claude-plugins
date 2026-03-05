@@ -63,6 +63,10 @@ Fetch the PRD page using the Notion MCP. Extract:
 - `release_date` — any release date or target date field (empty string if not set)
 - `project_status` — current Status field value
 
+If `project_status` is not `(1.5) Coming soon`, stop and report:
+> Error: `/qa:release-readiness` is only for projects in `(1.5) Coming soon`. Current status: `{project_status}`.
+> Use `/qa:qa-status-update` for earlier phases.
+
 Fetch all child pages from the PRD page ID and consolidate into `prd_text`.
 
 ---

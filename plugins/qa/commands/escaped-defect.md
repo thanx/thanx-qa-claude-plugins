@@ -166,7 +166,7 @@ If `total_bugs = 0`:
 
 ## Step 6: Log to Bug Impact Record
 
-For each bug where `escape_type` is not `unknown`, append to `wins/bug-impact-log.md` at `/Users/beatrizsouza/beatriz-workspace/wins/bug-impact-log.md`.
+For each bug where `escape_type` is not `unknown`, append to `wins/bug-impact-log.md` (relative to the current workspace/project root).
 
 If the file does not exist, create it with:
 

@@ -102,14 +102,15 @@ Find the most recent message from Beatriz (`U08UEQ22H7W`) or Giovani (`U08UEQ5MJ
 
 ## Step 4: Decide Whether to Post
 
-For each project, post the update if **any** of the following:
+For each project, post the update if **any** of the following apply:
 
 - `scope = "single"` (always post when a specific project is requested)
 - `days_since_last_qe_update > 5` (more than 5 days with no QE message)
 - `last_qe_message_date = "never"`
-- `slack_channel_found = false` (note the gap but do not post)
 
-If `scope = "all"` and none of the above apply, skip the project and note:
+If `slack_channel_found = false`: do **not** post — record the gap in the output summary as a missing channel. This is separate from the posting decision above.
+
+If `scope = "all"` and none of the posting conditions above apply, skip the project and note:
 > {prd_title} — skipped (last QE update {N} days ago, no changes to report)
 
 ---
