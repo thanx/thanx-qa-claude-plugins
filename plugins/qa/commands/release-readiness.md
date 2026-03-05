@@ -172,12 +172,13 @@ Extract:
 Evaluate all signals:
 
 **NOT READY** if any of the following:
+- `qa_brief_exists = false`
 - `suite_status` is `missing` or `draft`
 - `suite_verdict = "review_first"`
 - `uncovered_requirements_count > 0`
 - `bugs_critical > 0`
 - `open_questions_count >= 3`
-- `adoption_verdict` is `incomplete` or `missing`
+- `adoption_verdict` is `incomplete`, `missing`, or `unknown`
 
 **CONDITIONAL GO** if any of the following (and none of the NOT READY conditions apply):
 - `open_questions_count > 0`
@@ -238,8 +239,8 @@ Where:
 - `adoption_emoji` — `🟢` ready, `🟡` needs_clarification, `🔴` incomplete/missing
 - `suite_emoji` — `✅` approved, `⚠️` draft, `🔴` missing
 - `suite_label` — `approved`, `draft — pending review`, `MISSING`
-- `suite_scores_line` — `   Coverage: {risk_coverage_score}% | BDD quality: {bdd_quality_score}%` if available, empty otherwise
-- `uncovered_line` — `   ⚠️ {N} uncovered requirement(s)` if > 0, empty otherwise
+- `suite_scores_line` — `Coverage: {risk_coverage_score}% | BDD quality: {bdd_quality_score}%` if available, empty otherwise
+- `uncovered_line` — `⚠️ {N} uncovered requirement(s)` if > 0, empty otherwise
 - `data_initiative_line` — `{data_initiative_key} ({data_initiative_url})` if found, `NOT FOUND — initiative missing in DATA`
 - `bugs_breakdown` — `(Critical: {bugs_critical}, High: {bugs_high}, Medium: {bugs_medium})` if > 0, empty if 0
 - `critical_high_list` — list of Critical/High issue keys and summaries if any, empty otherwise
