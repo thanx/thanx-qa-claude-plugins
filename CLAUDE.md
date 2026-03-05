@@ -69,8 +69,10 @@ Run `npm test` before every PR. Tests validate:
 
 ## Configuration
 
+**Source of truth:** `plugins/qa/skills/qa-team-config/SKILL.md`
+Update the skill first, then this section and the corresponding command files.
+
 Hardcoded identifiers used across commands.
-When team members or infrastructure changes, update this section and the corresponding command files.
 
 ### Slack User IDs
 
