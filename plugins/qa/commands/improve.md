@@ -7,6 +7,11 @@ description: End-of-session compounding improvement loop. Capture learnings, pat
 Capture what this session taught, patch what can be improved, and leave the
 QA plugin measurably better for the next session.
 
+**Input (`$ARGUMENTS`):**
+- Optional scope hint: `commands`, `agents`, `skills`, or `all` (default: `all`)
+- Optional max changes: `max=N` (default: 5)
+- If empty, runs full-session audit and proposes up to 5 changes
+
 **Philosophy:** Small bets, high frequency. Each /qa:improve run compounds. Do not batch improvements - apply them now.
 
 ## Step 1: Session Audit

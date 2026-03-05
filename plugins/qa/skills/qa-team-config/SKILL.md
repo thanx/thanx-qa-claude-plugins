@@ -30,7 +30,7 @@ This is the **single source of truth** for QA team data. All commands and agents
 
 | Database | ID | Used in |
 |----------|-----|---------|
-| Projects database | `0d7ef002-875f-453b-bb05-7789a3436086` | `check-new-prds.md`, `recheck-prds.md` |
+| Projects database | `collection://0d7ef002-875f-453b-bb05-7789a3436086` | `check-new-prds.md`, `recheck-prds.md` |
 
 ## Jira Configuration
 
