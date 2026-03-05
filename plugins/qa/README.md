@@ -13,6 +13,7 @@ Claude Code plugin for Thanx QA Chapter workflows.
 | `/qa:adoption-review` | Review a Notion PRD for adoption criteria completeness |
 | `/qa:suite-reviewer` | Review an existing Test Suite Notion page |
 | `/qa:test-suite-prd` | Generate a [DRAFT] Test Suite from a Notion PRD |
+| `/qa:qa-status-update` | Post an updated QA status to one or all active project channels |
 | `/qa:release-readiness` | Full release readiness check for a project — sweeps Notion, Jira, and Slack |
 | `/qa:escaped-defect` | Analyze production bugs from a given period and classify their root cause |
 
