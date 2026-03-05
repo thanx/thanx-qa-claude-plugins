@@ -302,6 +302,17 @@ Store:
 
 If no product project key is found or Jira fails, set `jira_key = ""` and note the failure. Continue.
 
+**Confirm with user and update PRD:**
+
+If `jira_key` is not empty, ask:
+
+> Found/created `{jira_key}` ({jira_url}) — is this the correct Jira initiative for **{prd_title}**? (yes / no)
+
+- If **yes**: update the `"JIRA"` property on the PRD Notion page with `jira_url` using `notion-update-page`. Store `jira_prd_updated = true`.
+- If **no**: note the mismatch. Do not update the PRD. Set `jira_prd_updated = false` and clear `jira_key = ""`.
+
+If `jira_key` is empty, skip this confirmation and set `jira_prd_updated = false`.
+
 ---
 
 ## Step 8b: Create TQA Tracking Epic
@@ -363,6 +374,17 @@ Invite the following members to the channel (look up Slack IDs by name or email 
 Store `slack_channel_id` and `slack_channel_name`. Set `slack_channel_created = true`.
 
 If channel creation or invite fails, note the failure and continue.
+
+**Confirm with user and update PRD:**
+
+If `slack_channel_id` is not empty, ask:
+
+> Found/created `#{slack_channel_name}` — is this the correct Slack channel for **{prd_title}**? (yes / no)
+
+- If **yes**: update the `"Slack #channel"` property on the PRD Notion page with the full Slack URL (`https://thanx.slack.com/archives/{slack_channel_id}`) using `notion-update-page`. Store `slack_prd_updated = true`.
+- If **no**: note the mismatch. Do not update the PRD. Set `slack_prd_updated = false`.
+
+If `slack_channel_id` is empty, skip this confirmation and set `slack_prd_updated = false`.
 
 ---
 
@@ -475,8 +497,14 @@ Print the final pipeline summary:
 {tqa_line}
 {channel_line}
 
+PRD fields updated: {jira_prd_updated_line} | {slack_prd_updated_line}
 QA Scorecard updated on PRD.
 ```
+
+Where:
+
+- `jira_prd_updated_line` — `🎯 JIRA link saved` if `jira_prd_updated = true`, `⚠️ JIRA link not saved` otherwise
+- `slack_prd_updated_line` — `💬 Slack channel saved` if `slack_prd_updated = true`, `⚠️ Slack channel not saved` otherwise
 
 If any step failed, list failures at the end:
 

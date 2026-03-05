@@ -94,6 +94,14 @@ When team members or infrastructure changes, update this section and the corresp
 | Test Suite link field | `customfield_12289` | `test-suite-prd.md` (Step 6), `qa-kickoff.md` (Step 8a) |
 | TQA project key | `TQA` | `qa-kickoff.md` (Step 8b) |
 
+### Notion PRD Field Names
+
+| Field | Property Name | Format | Used in |
+|-------|---------------|--------|---------|
+| Jira initiative link | `"JIRA"` | URL string | `qa-kickoff.md` (Step 8a) |
+| Slack channel URL | `"Slack #channel"` | `https://thanx.slack.com/archives/{channel_id}` | `qa-kickoff.md` (Step 9) |
+| Slack channel checkbox | `"Channel in slack with QA"` | checkbox | `scorecard-updater` agent |
+
 ### Environment Variables
 
 | Variable | Purpose | Used in |
