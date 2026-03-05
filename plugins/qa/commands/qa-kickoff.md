@@ -1,5 +1,5 @@
 ---
-description: Run the full QA kickoff pipeline for a Notion PRD. Generates QA Brief, Adoption Review, Test Suite, Suite Review, and Scorecard Update. Creates Jira Initiative and Slack channel when Eng Lead is set.
+description: Run the full QA kickoff pipeline for a Notion PRD. Generates QA Brief, Adoption Review, Test Suite, Suite Review, and Scorecard Update. Finds or creates a Jira Initiative in the product project, always creates a [QA] tracking Epic in TQA, and finds or creates a Slack channel when Eng Lead is set.
 ---
 
 # QA Kickoff Pipeline
@@ -61,9 +61,11 @@ If the PRD is not accessible, stop:
 If `eng_lead_name` is empty:
 
 - Set `skip_external_actions = true`
-- Note: Jira Initiative and Slack channel creation will be skipped
+- Note: Product Jira Initiative and Slack channel will be skipped
 
 Otherwise set `skip_external_actions = false`.
+
+> The TQA tracking Epic (Step 8b) is **not gated** by this guardrail — it is always created as internal QA tracking, regardless of whether Eng Lead is set.
 
 ---
 
@@ -266,36 +268,69 @@ After this step, the test suite title in Notion is (if `draft_removed` is true):
 
 ---
 
-## Step 8: Create Jira Initiative
+## Step 8a: Find or Create Product Jira Initiative
 
 Skip this step if `skip_external_actions = true`. Note the skip.
 
-Look for a Jira project key in the PRD metadata or content (format: `ABC-123` or a project name/link).
+Look for a Jira project key in the PRD metadata or content (format: `ABC-123` or a project name/link). This is the **product team's project** (e.g., DATA, INNO, BG — not TQA).
 
-Create a Jira Initiative (not Epic) with:
+**Search before creating:** Query the product project for an existing epic or initiative linked to this PRD:
 
-- **Summary:** `QA: {prd_title}`
-- **Issue Type:** Initiative
+- Search query: `project = {product_project_key} AND (summary ~ "{prd_title}" OR text ~ "{prd_url}") ORDER BY created DESC`
+- If found: use the existing issue — store its key as `jira_key` and URL as `jira_url`, then update `customfield_12289` (Test Suite link) to `test_suite_notion_url`
+- If not found: create a new Initiative with:
+  - **Summary:** `QA: {prd_title}`
+  - **Issue Type:** Initiative
+  - **Description:**
+
+    ```text
+    QA Kickoff Pipeline — automated by Claude Code.
+
+    PRD: {prd_url}
+    QA Brief: {qa_brief_url}
+    Test Suite: {test_suite_notion_url}
+    Suite Verdict: {suite_verdict}
+    Adoption Review: {adoption_verdict}
+    ```
+
+  - Set `customfield_12289` (Test Suite link) to `test_suite_notion_url`
+
+Store:
+
+- `jira_key` — the found or created issue key (e.g., `DATA-1234`)
+- `jira_url` — the issue URL
+
+If no product project key is found or Jira fails, set `jira_key = ""` and note the failure. Continue.
+
+---
+
+## Step 8b: Create TQA Tracking Epic
+
+Always run this step — not gated by `skip_external_actions`.
+
+Create a Jira Epic in the **TQA project** to track this project on the QA timeline:
+
+- **Project:** `TQA`
+- **Summary:** `[QA] {prd_title}`
+- **Issue Type:** Epic
+- **Assignee:** Look up the Jira account ID for `qe_name` using `lookupJiraAccountId`. If not found, leave unassigned and note.
 - **Description:**
 
   ```text
-  QA Kickoff Pipeline — automated by Claude Code.
+  QA tracking epic — created by the QA Kickoff Pipeline.
 
   PRD: {prd_url}
   QA Brief: {qa_brief_url}
   Test Suite: {test_suite_notion_url}
-  Suite Verdict: {suite_verdict}
-  Adoption Review: {adoption_verdict}
+  Product Jira: {jira_url}
   ```
-
-- Set `customfield_12289` (Test Suite link) to `test_suite_notion_url`
 
 Store:
 
-- `jira_key` — the created issue key (e.g., `BG-1234`)
-- `jira_url` — the issue URL
+- `tqa_key` — the created epic key (e.g., `TQA-456`)
+- `tqa_url` — the epic URL
 
-If Jira creation fails or no project key is found, set `jira_key = ""` and note the failure in the output. Continue.
+If TQA epic creation fails, set `tqa_key = ""` and note the failure. Continue.
 
 ---
 
@@ -335,7 +370,7 @@ If channel creation or invite fails, note the failure and continue.
 
 Skip this step if `skip_external_actions = true`.
 
-Post this message to `slack_channel_id`:
+Post this message to `slack_channel_id` after Steps 7–9 complete (suite review, Jira, and channel are all ready):
 
 ```text
 👋 QA Kickoff — {prd_title}
@@ -346,16 +381,19 @@ The QA pipeline has run for this project.
 📋 QA Brief: {qa_brief_url}
 📊 Adoption Review: {adoption_verdict_emoji} {adoption_verdict}
 {adoption_review_line}
+🧪 Test Suite: {test_suite_notion_url}
+   {suite_verdict_emoji} Suite verdict: {suite_verdict}
+   🎯 Coverage: {risk_coverage_score}%
+   ✍️ BDD quality: {bdd_quality_score}%
 {jira_line}
-
-Next step: review the QA Brief and resolve open questions with the PM and Eng Lead before the kickoff meeting.
 ```
 
 Where:
 
 - `adoption_verdict_emoji` is `🟢` for `ready`, `🟡` for `needs_clarification`, `🔴` for `incomplete`
-- `adoption_review_line` is `Page: {adoption_review_url}` (indented with 3 spaces) if `adoption_review_url` is not empty, empty otherwise
-- `jira_line` is `🎯 Jira: {jira_url}` if Jira was created, empty otherwise
+- `adoption_review_line` is `   Page: {adoption_review_url}` (indented with 3 spaces) if `adoption_review_url` is not empty, empty otherwise
+- `suite_verdict_emoji` is `✅` for `ready`, `⚠️` for `review_first`
+- `jira_line` is `🎯 Jira: {jira_url}` if product Jira was found/created, empty otherwise
 
 ---
 
@@ -393,29 +431,7 @@ If the update fails, note the failure and continue.
 
 ---
 
-## Step 13: Post Final Message to Project Channel
-
-Skip this step if `skip_external_actions = true`.
-
-Post this message to `slack_channel_id`:
-
-```text
-🧪 Test Suite ready — {prd_title}
-
-{suite_verdict_emoji} Suite verdict: {suite_verdict}
-📝 Test Suite: {test_suite_notion_url}
-🎯 Coverage: {risk_coverage_score}%  ✍️ BDD quality: {bdd_quality_score}%
-{missing_note}
-```
-
-Where:
-
-- `suite_verdict_emoji` is `✅` for `ready`, `⚠️` for `review_first`
-- `missing_note` is empty for `ready`, or `⚠️ {N} risk areas have coverage gaps — see the test suite for details.` for `review_first`
-
----
-
-## Step 14: Post Summary to #qa-test-suites-bot
+## Step 13: Post Summary to #qa-test-suites-bot
 
 Find the `#qa-test-suites-bot` Slack channel and post:
 
@@ -427,6 +443,7 @@ Find the `#qa-test-suites-bot` Slack channel and post:
 📋 QA Brief: {qa_brief_url}
 🧪 Test Suite: {test_suite_notion_url}
 {jira_line}
+{tqa_line}
 {channel_line}
 
 Eng Lead: {eng_lead_name} | PM: {pm_name} | QE: {qe_name}
@@ -435,13 +452,14 @@ Eng Lead: {eng_lead_name} | PM: {pm_name} | QE: {qe_name}
 
 Where:
 
-- `jira_line` is `🎯 Jira: {jira_url}` if created, empty otherwise
+- `jira_line` is `🎯 Jira: {jira_url}` if product Jira was found/created, empty otherwise
+- `tqa_line` is `📋 TQA: {tqa_url}` if TQA epic was created, empty otherwise
 - `channel_line` is `💬 Channel: #{slack_channel_name}` if found/created, empty otherwise
-- `guardrail_note` is `⚠️ Jira and Slack channel skipped — Eng Lead not set in PRD.` if `skip_external_actions = true`, empty otherwise
+- `guardrail_note` is `⚠️ Product Jira and Slack channel skipped — Eng Lead not set in PRD.` if `skip_external_actions = true`, empty otherwise
 
 ---
 
-## Step 15: Output Summary to User
+## Step 14: Output Summary to User
 
 Print the final pipeline summary:
 
@@ -454,6 +472,7 @@ Print the final pipeline summary:
 {suite_verdict_emoji} Suite verdict: {suite_verdict}
 {adoption_verdict_emoji} Adoption Review: {adoption_verdict}
 {jira_line}
+{tqa_line}
 {channel_line}
 
 QA Scorecard updated on PRD.

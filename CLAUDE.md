@@ -91,7 +91,8 @@ When team members or infrastructure changes, update this section and the corresp
 | Identifier | Value | Used in |
 |------------|-------|---------|
 | Jira Cloud ID | `7d5d6532-069d-419b-bd1c-d8321b134435` | `test-suite-prd.md` (Step 2) |
-| Test Suite link field | `customfield_12289` | `test-suite-prd.md` (Step 6), `qa-kickoff.md` (Step 8) |
+| Test Suite link field | `customfield_12289` | `test-suite-prd.md` (Step 6), `qa-kickoff.md` (Step 8a) |
+| TQA project key | `TQA` | `qa-kickoff.md` (Step 8b) |
 
 ### Environment Variables
 
