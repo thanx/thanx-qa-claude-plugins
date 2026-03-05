@@ -2,7 +2,7 @@
 
 ## Plugin Structure
 
-```
+```text
 plugins/qa/
   .claude-plugin/plugin.json   # Plugin manifest
   commands/*.md                # Slash commands
