@@ -274,6 +274,14 @@ Skip this step if `skip_external_actions = true`. Note the skip.
 
 Look for a Jira project key in the PRD metadata or content (format: `ABC-123` or a project name/link). This is the **product team's project** (e.g., DATA, INNO, BG — not TQA).
 
+**Normalize the project key before use:**
+
+- If the input looks like a ticket (e.g., `ABC-123`), extract the project key (`ABC`)
+- If the input is a Jira URL, parse the project key from the URL
+- If the input is a human name (e.g., "Data Platform"), map it to the known project key if possible
+- Validate the result matches `/^[A-Z][A-Z0-9_]+$/` — if it does not, set `jira_key = ""`
+  and skip the search/create. Note the failure.
+
 **Search before creating:** Query the product project for an existing epic or initiative linked to this PRD:
 
 - Search query: `project = {product_project_key} AND (summary ~ "{prd_title}" OR text ~ "{prd_url}") ORDER BY created DESC`
@@ -300,7 +308,8 @@ Store:
 - `jira_key` — the found or created issue key (e.g., `DATA-1234`)
 - `jira_url` — the issue URL
 
-If no product project key is found or Jira fails, set `jira_key = ""` and note the failure. Continue.
+If no product project key is found or Jira fails, set `jira_key = ""` and `jira_url = ""`
+and note the failure. Continue.
 
 **Confirm with user and update PRD:**
 
@@ -308,8 +317,11 @@ If `jira_key` is not empty, ask:
 
 > Found/created `{jira_key}` ({jira_url}) — is this the correct Jira initiative for **{prd_title}**? (yes / no)
 
-- If **yes**: update the `"JIRA"` property on the PRD Notion page with `jira_url` using `notion-update-page`. Store `jira_prd_updated = true`.
-- If **no**: note the mismatch. Do not update the PRD. Set `jira_prd_updated = false` and clear `jira_key = ""`.
+- If **yes**: update the `"JIRA"` property on the PRD Notion page with `jira_url` using
+  `notion-update-page` (only when both `jira_key` and `jira_url` are non-empty).
+  Store `jira_prd_updated = true`.
+- If **no**: note the mismatch. Do not update the PRD.
+  Set `jira_prd_updated = false` and clear `jira_key = ""` and `jira_url = ""`.
 
 If `jira_key` is empty, skip this confirmation and set `jira_prd_updated = false`.
 
@@ -319,26 +331,31 @@ If `jira_key` is empty, skip this confirmation and set `jira_prd_updated = false
 
 Always run this step — not gated by `skip_external_actions`.
 
-Create a Jira Epic in the **TQA project** to track this project on the QA timeline:
+**Search before creating:** Query TQA for an existing epic already linked to this PRD:
 
-- **Project:** `TQA`
-- **Summary:** `[QA] {prd_title}`
-- **Issue Type:** Epic
-- **Assignee:** Look up the Jira account ID for `qe_name` using `lookupJiraAccountId`. If not found, leave unassigned and note.
-- **Description:**
+- Search query: `project = TQA AND summary ~ "[QA] {prd_title}" ORDER BY created DESC`
+- If found: store its key as `tqa_key` and URL as `tqa_url`. Skip creation.
+- If not found: create a new Jira Epic in the **TQA project**:
 
-  ```text
-  QA tracking epic — created by the QA Kickoff Pipeline.
+  - **Project:** `TQA`
+  - **Summary:** `[QA] {prd_title}`
+  - **Issue Type:** Epic
+  - **Assignee:** Look up the Jira account ID for `qe_name` using `lookupJiraAccountId`.
+    If not found, leave unassigned and note.
+  - **Description:**
 
-  PRD: {prd_url}
-  QA Brief: {qa_brief_url}
-  Test Suite: {test_suite_notion_url}
-  Product Jira: {jira_url}
-  ```
+    ```text
+    QA tracking epic — created by the QA Kickoff Pipeline.
+
+    PRD: {prd_url}
+    QA Brief: {qa_brief_url}
+    Test Suite: {test_suite_notion_url}
+    Product Jira: {jira_url}
+    ```
 
 Store:
 
-- `tqa_key` — the created epic key (e.g., `TQA-456`)
+- `tqa_key` — the found or created epic key (e.g., `TQA-456`)
 - `tqa_url` — the epic URL
 
 If TQA epic creation fails, set `tqa_key = ""` and note the failure. Continue.
@@ -381,8 +398,11 @@ If `slack_channel_id` is not empty, ask:
 
 > Found/created `#{slack_channel_name}` — is this the correct Slack channel for **{prd_title}**? (yes / no)
 
-- If **yes**: update the `"Slack #channel"` property on the PRD Notion page with the full Slack URL (`https://thanx.slack.com/archives/{slack_channel_id}`) using `notion-update-page`. Store `slack_prd_updated = true`.
-- If **no**: note the mismatch. Do not update the PRD. Set `slack_prd_updated = false`.
+- If **yes**: update the `"Slack #channel"` property on the PRD Notion page with the full
+  Slack URL (`https://thanx.slack.com/archives/{slack_channel_id}`) using `notion-update-page`.
+  Store `slack_prd_updated = true`.
+- If **no**: note the mismatch. Do not update the PRD. Set `slack_prd_updated = false`
+  and clear `slack_channel_id = ""` and `slack_channel_name = ""`.
 
 If `slack_channel_id` is empty, skip this confirmation and set `slack_prd_updated = false`.
 
@@ -390,7 +410,7 @@ If `slack_channel_id` is empty, skip this confirmation and set `slack_prd_update
 
 ## Step 10: Post Kickoff Message to Project Channel
 
-Skip this step if `skip_external_actions = true`.
+Skip this step if `skip_external_actions = true` or if `slack_channel_id` is empty or blank.
 
 Post this message to `slack_channel_id` after Steps 7–9 complete (suite review, Jira, and channel are all ready):
 
