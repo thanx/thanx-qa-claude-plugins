@@ -50,7 +50,7 @@ Sort each proposed improvement by target:
 
 ## Step 3: Propose Changes
 
-For each improvement, show the exact diff:
+For each improvement, show the exact diff. If `max=N` was provided in `$ARGUMENTS`, limit proposals to the top N by impact. Otherwise default to 5.
 
 ```text
 ### Target: <file_path>
@@ -62,6 +62,7 @@ For each improvement, show the exact diff:
 
 **Rules:**
 
+- Respect the max limit — rank by impact and drop lower-priority items
 - Prefer small, targeted patches over large rewrites
 - If the same file keeps getting patched, flag it for restructuring
 - Every proposed change must include: what changes, why it helps future sessions
@@ -70,12 +71,12 @@ For each improvement, show the exact diff:
 
 ## Step 4: Apply (With Approval)
 
-Present all proposed changes as a numbered list. Wait for explicit approval before applying.
+Present all proposed changes as a numbered list, capped at the max from `$ARGUMENTS` (default 5). Wait for explicit approval before applying.
 
 Format:
 
 ```text
-## Proposed Improvements (N changes)
+## Proposed Improvements (N changes, max M)
 
 1. [plugins/qa/commands/test-suite-prd.md] Add handling for X edge case
 2. [plugins/qa/skills/bdd-conventions/SKILL.md] New skill: BDD writing conventions
@@ -96,7 +97,7 @@ Check if any repeated pattern from this session (or across recent sessions) shou
 - [ ] The pattern is repeatable (not a one-time operation)
 - [ ] It's non-trivial (saves >2 minutes per invocation)
 - [ ] It's self-contained (can run without extensive setup context)
-- [ ] It doesn't duplicate an existing command (`/qa:adoption-review`, `/qa:qa-kickoff`, `/qa:test-suite-prd`, `/qa:suite-reviewer`, `/qa:qa-brief`, `/qa:check-new-prds`, `/qa:recheck-prds`)
+- [ ] It doesn't duplicate an existing command — check `plugins/qa/commands/` for the current list
   or a main plugin command (`/investigate`, `/review`, etc.)
 
 If a new command passes the threshold, draft the `plugins/qa/commands/<name>.md` file and include it in the proposed changes.

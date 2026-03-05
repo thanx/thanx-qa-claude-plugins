@@ -11,10 +11,10 @@ This is the **single source of truth** for QA team data. All commands and agents
 
 | Name | Slack ID | Role | GitHub |
 |------|----------|------|--------|
-| Beatriz Souza | `U08UEQ22H7W` | QA Engineer | `Beatriz-Thanx` |
-| Giovani Silva | `U08UEQ5MJDA` | QA Engineer | `giovani-thanx` |
+| Beatriz Souza | `U08UEQ22H7W` | QA Lead | `Beatriz-Thanx` |
+| Giovani Silva | `U08UEQ5MJDA` | QA Lead | `giovani-thanx` |
 
-**QA Chapter Lead:** Lial (`U08HTSEURPH`)
+**Engineering Manager:** Juliano Coimbra (`U06MDTUHKTP`)
 
 **Team Slack IDs (for filtering):** `U08UEQ22H7W`, `U08UEQ5MJDA`
 
@@ -23,6 +23,7 @@ This is the **single source of truth** for QA team data. All commands and agents
 | Channel | ID | Type |
 |---------|-----|------|
 | `#rnd-qa-engs-internal` | `C08UMERQG5D` | Internal — QA team discussions |
+| `#qa-bug-trends` | `C0AHA7768J0` | Bug signal alerts — used by `/analyze-app-reviews` and Cerebro |
 
 **Webhook:** `QA_SLACK_WEBHOOK_URL` env var (used for bot notifications to QA channel)
 
@@ -31,12 +32,16 @@ This is the **single source of truth** for QA team data. All commands and agents
 | Database | ID | Used in |
 |----------|-----|---------|
 | Projects database | `collection://0d7ef002-875f-453b-bb05-7789a3436086` | `check-new-prds.md`, `recheck-prds.md` |
+| QA PRD Scorecard | `2efa84ed-4024-8015-87de-da0ca1cfa07b` | `scorecard-updater.md`, `qa-kickoff.md` |
+
+> **Note:** QA PRD Scorecard is a view built on the Projects (PRD) database, not a standalone database.
 
 ## Jira Configuration
 
 | Identifier | Value | Used in |
 |------------|-------|---------|
 | Jira Cloud ID | `7d5d6532-069d-419b-bd1c-d8321b134435` | `test-suite-prd.md` |
+| TQA project key | `TQA` | `test-suite-prd.md`, `qa-kickoff.md` |
 | Test Suite link field | `customfield_12289` | `test-suite-prd.md`, `qa-kickoff.md` |
 
 ## Key Repos
