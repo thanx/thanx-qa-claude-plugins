@@ -1,12 +1,13 @@
 ---
-description: Full release readiness check for a specific project. Sweeps Notion artifacts, the DATA Jira initiative, and the project Slack channel to produce a Go / Conditional Go / Not Ready verdict. Posts the report to the project channel.
+description: Full release readiness check for a project in Coming Soon status. Sweeps Notion artifacts, the DATA Jira initiative, and the project Slack channel to produce a Go / Conditional Go / Not Ready verdict. Posts the report to the project channel.
 ---
 
 # Release Readiness Check
 
-Run a complete release readiness sweep for a single project. Checks every QA artifact,
-open bugs in the DATA Jira initiative, and the project Slack channel — including test
-execution results reported by devs that may never have been updated in Notion or Jira.
+Run a complete release readiness sweep for a project that is about to go to production
+(`(1.5) Coming soon`). Checks every QA artifact, open bugs in the DATA Jira initiative,
+and the project Slack channel — including test execution results reported by devs that
+may never have been updated in Notion or Jira.
 
 ## Usage
 
@@ -43,6 +44,10 @@ If zero matches: stop and report:
 If multiple matches: list them and ask the user to confirm which one.
 
 If exactly one match: proceed with that project's Notion URL as `prd_url`.
+
+> This command is intended for projects in `(1.5) Coming soon` status — projects that are
+> about to go to production and need a final QA sign-off. For earlier phases, use
+> `/qa:qa-status-update` instead.
 
 ---
 
