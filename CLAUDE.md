@@ -94,9 +94,11 @@ Hardcoded identifiers used across commands.
 
 | Identifier | Value | Used in |
 |------------|-------|---------|
-| Jira Cloud ID | `7d5d6532-069d-419b-bd1c-d8321b134435` | `test-suite-prd.md` (Step 2) |
+| Jira Cloud ID | `7d5d6532-069d-419b-bd1c-d8321b134435` | `test-suite-prd.md` (Step 2), `escaped-defect.md` (Step 2) |
 | TQA project key | `TQA` | `qa-kickoff.md` (Step 8b), `test-suite-prd.md` |
 | Test Suite link field | `customfield_12289` | `test-suite-prd.md` (Step 6), `qa-kickoff.md` (Step 8a) |
+| DATA project key | `DATA` | `release-readiness.md` (Step 4), `escaped-defect.md` (Step 4a) |
+| BUGS project key | `BUGS` | `escaped-defect.md` (Step 2) |
 
 ### Notion PRD Field Names
 
