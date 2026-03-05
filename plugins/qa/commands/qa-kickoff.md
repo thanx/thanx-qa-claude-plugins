@@ -1,5 +1,5 @@
 ---
-description: Run the full QA kickoff pipeline for a Notion PRD. Generates QA Brief, Adoption Review, Test Suite, Suite Review, and Scorecard Update. Creates Jira Initiative and Slack channel when Eng Lead is set.
+description: Run the full QA kickoff pipeline for a Notion PRD. Generates QA Brief, Adoption Review, Test Suite, Suite Review, and Scorecard Update. Finds or creates a Jira Initiative in the product project, always creates a [QA] tracking Epic in TQA, and finds or creates a Slack channel when Eng Lead is set.
 ---
 
 # QA Kickoff Pipeline
@@ -61,9 +61,11 @@ If the PRD is not accessible, stop:
 If `eng_lead_name` is empty:
 
 - Set `skip_external_actions = true`
-- Note: Jira Initiative and Slack channel creation will be skipped
+- Note: Product Jira Initiative and Slack channel will be skipped
 
 Otherwise set `skip_external_actions = false`.
+
+> The TQA tracking Epic (Step 8b) is **not gated** by this guardrail — it is always created as internal QA tracking, regardless of whether Eng Lead is set.
 
 ---
 
@@ -266,36 +268,97 @@ After this step, the test suite title in Notion is (if `draft_removed` is true):
 
 ---
 
-## Step 8: Create Jira Initiative
+## Step 8a: Find or Create Product Jira Initiative
 
 Skip this step if `skip_external_actions = true`. Note the skip.
 
-Look for a Jira project key in the PRD metadata or content (format: `ABC-123` or a project name/link).
+Look for a Jira project key in the PRD metadata or content (format: `ABC-123` or a project name/link). This is the **product team's project** (e.g., DATA, INNO, BG — not TQA).
 
-Create a Jira Initiative (not Epic) with:
+**Normalize the project key before use:**
 
-- **Summary:** `QA: {prd_title}`
-- **Issue Type:** Initiative
-- **Description:**
+- If the input looks like a ticket (e.g., `ABC-123`), extract the project key (`ABC`)
+- If the input is a Jira URL, parse the project key from the URL
+- If the input is a human name (e.g., "Data Platform"), map it to the known project key if possible
+- Validate the result matches `/^[A-Z][A-Z0-9_]+$/` — if it does not, set `jira_key = ""`
+  and skip the search/create. Note the failure.
 
-  ```text
-  QA Kickoff Pipeline — automated by Claude Code.
+**Search before creating:** Query the product project for an existing epic or initiative linked to this PRD:
 
-  PRD: {prd_url}
-  QA Brief: {qa_brief_url}
-  Test Suite: {test_suite_notion_url}
-  Suite Verdict: {suite_verdict}
-  Adoption Review: {adoption_verdict}
-  ```
+- Search query: `project = {product_project_key} AND (summary ~ "{prd_title}" OR text ~ "{prd_url}") ORDER BY created DESC`
+- If found: use the existing issue — store its key as `jira_key` and URL as `jira_url`, then update `customfield_12289` (Test Suite link) to `test_suite_notion_url`
+- If not found: create a new Initiative with:
+  - **Summary:** `QA: {prd_title}`
+  - **Issue Type:** Initiative
+  - **Description:**
 
-- Set `customfield_12289` (Test Suite link) to `test_suite_notion_url`
+    ```text
+    QA Kickoff Pipeline — automated by Claude Code.
+
+    PRD: {prd_url}
+    QA Brief: {qa_brief_url}
+    Test Suite: {test_suite_notion_url}
+    Suite Verdict: {suite_verdict}
+    Adoption Review: {adoption_verdict}
+    ```
+
+  - Set `customfield_12289` (Test Suite link) to `test_suite_notion_url`
 
 Store:
 
-- `jira_key` — the created issue key (e.g., `BG-1234`)
+- `jira_key` — the found or created issue key (e.g., `DATA-1234`)
 - `jira_url` — the issue URL
 
-If Jira creation fails or no project key is found, set `jira_key = ""` and note the failure in the output. Continue.
+If no product project key is found or Jira fails, set `jira_key = ""` and `jira_url = ""`
+and note the failure. Continue.
+
+**Confirm with user and update PRD:**
+
+If `jira_key` is not empty, ask:
+
+> Found/created `{jira_key}` ({jira_url}) — is this the correct Jira initiative for **{prd_title}**? (yes / no)
+
+- If **yes**: update the `"JIRA"` property on the PRD Notion page with `jira_url` using
+  `notion-update-page` (only when both `jira_key` and `jira_url` are non-empty).
+  Store `jira_prd_updated = true`.
+- If **no**: note the mismatch. Do not update the PRD.
+  Set `jira_prd_updated = false` and clear `jira_key = ""` and `jira_url = ""`.
+
+If `jira_key` is empty, skip this confirmation and set `jira_prd_updated = false`.
+
+---
+
+## Step 8b: Create TQA Tracking Epic
+
+Always run this step — not gated by `skip_external_actions`.
+
+**Search before creating:** Query TQA for an existing epic already linked to this PRD:
+
+- Search query: `project = TQA AND summary ~ "[QA] {prd_title}" ORDER BY created DESC`
+- If found: store its key as `tqa_key` and URL as `tqa_url`. Skip creation.
+- If not found: create a new Jira Epic in the **TQA project**:
+
+  - **Project:** `TQA`
+  - **Summary:** `[QA] {prd_title}`
+  - **Issue Type:** Epic
+  - **Assignee:** Look up the Jira account ID for `qe_name` using `lookupJiraAccountId`.
+    If not found, leave unassigned and note.
+  - **Description:**
+
+    ```text
+    QA tracking epic — created by the QA Kickoff Pipeline.
+
+    PRD: {prd_url}
+    QA Brief: {qa_brief_url}
+    Test Suite: {test_suite_notion_url}
+    Product Jira: {jira_url}
+    ```
+
+Store:
+
+- `tqa_key` — the found or created epic key (e.g., `TQA-456`)
+- `tqa_url` — the epic URL
+
+If TQA epic creation fails, set `tqa_key = ""` and note the failure. Continue.
 
 ---
 
@@ -329,13 +392,27 @@ Store `slack_channel_id` and `slack_channel_name`. Set `slack_channel_created = 
 
 If channel creation or invite fails, note the failure and continue.
 
+**Confirm with user and update PRD:**
+
+If `slack_channel_id` is not empty, ask:
+
+> Found/created `#{slack_channel_name}` — is this the correct Slack channel for **{prd_title}**? (yes / no)
+
+- If **yes**: update the `"Slack #channel"` property on the PRD Notion page with the full
+  Slack URL (`https://thanx.slack.com/archives/{slack_channel_id}`) using `notion-update-page`.
+  Store `slack_prd_updated = true`.
+- If **no**: note the mismatch. Do not update the PRD. Set `slack_prd_updated = false`
+  and clear `slack_channel_id = ""` and `slack_channel_name = ""`.
+
+If `slack_channel_id` is empty, skip this confirmation and set `slack_prd_updated = false`.
+
 ---
 
 ## Step 10: Post Kickoff Message to Project Channel
 
-Skip this step if `skip_external_actions = true`.
+Skip this step if `skip_external_actions = true` or if `slack_channel_id` is empty or blank.
 
-Post this message to `slack_channel_id`:
+Post this message to `slack_channel_id` after Steps 7–9 complete (suite review, Jira, and channel are all ready):
 
 ```text
 👋 QA Kickoff — {prd_title}
@@ -346,16 +423,19 @@ The QA pipeline has run for this project.
 📋 QA Brief: {qa_brief_url}
 📊 Adoption Review: {adoption_verdict_emoji} {adoption_verdict}
 {adoption_review_line}
+🧪 Test Suite: {test_suite_notion_url}
+   {suite_verdict_emoji} Suite verdict: {suite_verdict}
+   🎯 Coverage: {risk_coverage_score}%
+   ✍️ BDD quality: {bdd_quality_score}%
 {jira_line}
-
-Next step: review the QA Brief and resolve open questions with the PM and Eng Lead before the kickoff meeting.
 ```
 
 Where:
 
 - `adoption_verdict_emoji` is `🟢` for `ready`, `🟡` for `needs_clarification`, `🔴` for `incomplete`
-- `adoption_review_line` is `Page: {adoption_review_url}` (indented with 3 spaces) if `adoption_review_url` is not empty, empty otherwise
-- `jira_line` is `🎯 Jira: {jira_url}` if Jira was created, empty otherwise
+- `adoption_review_line` is `Page: {adoption_review_url}` (prefix with 3 spaces when rendering) if `adoption_review_url` is not empty, empty otherwise
+- `suite_verdict_emoji` is `✅` for `ready`, `⚠️` for `review_first`
+- `jira_line` is `🎯 Jira: {jira_url}` if product Jira was found/created, empty otherwise
 
 ---
 
@@ -393,29 +473,7 @@ If the update fails, note the failure and continue.
 
 ---
 
-## Step 13: Post Final Message to Project Channel
-
-Skip this step if `skip_external_actions = true`.
-
-Post this message to `slack_channel_id`:
-
-```text
-🧪 Test Suite ready — {prd_title}
-
-{suite_verdict_emoji} Suite verdict: {suite_verdict}
-📝 Test Suite: {test_suite_notion_url}
-🎯 Coverage: {risk_coverage_score}%  ✍️ BDD quality: {bdd_quality_score}%
-{missing_note}
-```
-
-Where:
-
-- `suite_verdict_emoji` is `✅` for `ready`, `⚠️` for `review_first`
-- `missing_note` is empty for `ready`, or `⚠️ {N} risk areas have coverage gaps — see the test suite for details.` for `review_first`
-
----
-
-## Step 14: Post Summary to #qa-test-suites-bot
+## Step 13: Post Summary to #qa-test-suites-bot
 
 Find the `#qa-test-suites-bot` Slack channel and post:
 
@@ -427,6 +485,7 @@ Find the `#qa-test-suites-bot` Slack channel and post:
 📋 QA Brief: {qa_brief_url}
 🧪 Test Suite: {test_suite_notion_url}
 {jira_line}
+{tqa_line}
 {channel_line}
 
 Eng Lead: {eng_lead_name} | PM: {pm_name} | QE: {qe_name}
@@ -435,13 +494,14 @@ Eng Lead: {eng_lead_name} | PM: {pm_name} | QE: {qe_name}
 
 Where:
 
-- `jira_line` is `🎯 Jira: {jira_url}` if created, empty otherwise
+- `jira_line` is `🎯 Jira: {jira_url}` if product Jira was found/created, empty otherwise
+- `tqa_line` is `📋 TQA: {tqa_url}` if TQA epic was created, empty otherwise
 - `channel_line` is `💬 Channel: #{slack_channel_name}` if found/created, empty otherwise
-- `guardrail_note` is `⚠️ Jira and Slack channel skipped — Eng Lead not set in PRD.` if `skip_external_actions = true`, empty otherwise
+- `guardrail_note` is `⚠️ Product Jira and Slack channel skipped — Eng Lead not set in PRD.` if `skip_external_actions = true`, empty otherwise
 
 ---
 
-## Step 15: Output Summary to User
+## Step 14: Output Summary to User
 
 Print the final pipeline summary:
 
@@ -454,10 +514,17 @@ Print the final pipeline summary:
 {suite_verdict_emoji} Suite verdict: {suite_verdict}
 {adoption_verdict_emoji} Adoption Review: {adoption_verdict}
 {jira_line}
+{tqa_line}
 {channel_line}
 
+PRD fields updated: {jira_prd_updated_line} | {slack_prd_updated_line}
 QA Scorecard updated on PRD.
 ```
+
+Where:
+
+- `jira_prd_updated_line` — `🎯 JIRA link saved` if `jira_prd_updated = true`, `⚠️ JIRA link not saved` otherwise
+- `slack_prd_updated_line` — `💬 Slack channel saved` if `slack_prd_updated = true`, `⚠️ Slack channel not saved` otherwise
 
 If any step failed, list failures at the end:
 

@@ -2,7 +2,7 @@
 
 ## Plugin Structure
 
-```
+```text
 plugins/qa/
   .claude-plugin/plugin.json   # Plugin manifest
   commands/*.md                # Slash commands
@@ -95,8 +95,16 @@ Hardcoded identifiers used across commands.
 | Identifier | Value | Used in |
 |------------|-------|---------|
 | Jira Cloud ID | `7d5d6532-069d-419b-bd1c-d8321b134435` | `test-suite-prd.md` (Step 2) |
-| TQA project key | `TQA` | `test-suite-prd.md`, `qa-kickoff.md` |
-| Test Suite link field | `customfield_12289` | `test-suite-prd.md` (Step 6), `qa-kickoff.md` (Step 8) |
+| TQA project key | `TQA` | `qa-kickoff.md` (Step 8b), `test-suite-prd.md` |
+| Test Suite link field | `customfield_12289` | `test-suite-prd.md` (Step 6), `qa-kickoff.md` (Step 8a) |
+
+### Notion PRD Field Names
+
+| Field | Property Name | Format | Used in |
+|-------|---------------|--------|---------|
+| Jira initiative link | `"JIRA"` | URL string | `qa-kickoff.md` (Step 8a) |
+| Slack channel URL | `"Slack #channel"` | `https://thanx.slack.com/archives/{channel_id}` | `qa-kickoff.md` (Step 9) |
+| Slack channel checkbox | `"Channel in slack with QA"` | checkbox | `scorecard-updater` agent |
 
 ### Environment Variables
 
