@@ -148,6 +148,7 @@ Return a JSON object with the review results. Do not include markdown formatting
   },
   "risk_coverage_score": "0-100",
   "bdd_quality_score": "0-100",
+  "automation_tagging_score": "0-100",
   "risk_coverage": [
     {
       "risk_area": "Name of the risk area from QA Brief",
