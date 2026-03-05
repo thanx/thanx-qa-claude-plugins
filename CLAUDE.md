@@ -78,10 +78,16 @@ Hardcoded identifiers used across commands.
 
 | Name | Slack User ID | Used in |
 |------|---------------|---------|
-| Beatriz | `U08UEQ22H7W` | `qa-kickoff.md` (Step 9), `test-suite-prd.md` (Step 7) |
-| Giovani | `U08UEQ5MJDA` | `test-suite-prd.md` (Step 7) |
+| Beatriz | `U08UEQ22H7W` | `qa-kickoff.md` (Step 9), `test-suite-prd.md` (Step 7), `qa-status-update.md` (Step 3), `release-readiness.md` (Step 5) |
+| Giovani | `U08UEQ5MJDA` | `test-suite-prd.md` (Step 7), `qa-status-update.md` (Step 3), `release-readiness.md` (Step 5) |
 | Lial | `U08HTSEURPH` | `qa-kickoff.md` (Step 9) |
 | Juliano Coimbra | `U06MDTUHKTP` | `qa-team-config` (Chapter Lead) |
+
+### Slack Channel IDs
+
+| Channel | ID | Used in |
+|---------|-----|---------|
+| `#rnd-qa-engs-internal` | `C08UMERQG5D` | `qa-status-update.md` (Step 5) |
 
 ### Notion Database IDs
 

@@ -117,9 +117,16 @@ If `scope = "all"` and none of the posting conditions above apply, skip the proj
 
 ## Step 5: Build and Post the Status Message
 
-For each project where posting was decided:
+The destination depends on scope:
 
-Build this message:
+- **`scope = "single"`** — post directly to the project's `slack_channel_id`
+- **`scope = "all"`** — post a consolidated digest to `#rnd-qa-engs-internal` (`C08UMERQG5D`)
+
+> **Config note:** `#rnd-qa-engs-internal` channel ID is documented in CLAUDE.md > Configuration.
+
+---
+
+### Single project message (post to project channel)
 
 ```text
 📊 QA Status — {prd_title}
@@ -137,26 +144,39 @@ Build this message:
 📅 Last QE update: {last_qe_update_line}
 ```
 
-Where:
+### All projects digest (post to #rnd-qa-engs-internal)
 
-- `release_date_line` — `📅 Release: {release_date} ({N} days away)` if set and future;
-  `📅 Release: {release_date} (⚠️ overdue by {N} days)` if past;
-  omit line entirely if not set
+```text
+📊 QA Status Digest — {today}
+
+{for each project that was not skipped:}
+*{prd_title}* {release_date_inline}
+📋 {project_status} | 🧪 {suite_emoji} {suite_verdict_or_status} | 📊 {adoption_emoji} {adoption_verdict} | ❓ {open_questions_count} open
+{data_initiative_line}
+📅 Last QE update: {last_qe_update_line}
+
+{if any projects were skipped:}
+_Skipped ({N}): {comma-separated list of skipped project names} — QE updated recently_
+```
+
+Where `release_date_inline` is `· 📅 {N} days to release` if set and future, `· ⚠️ overdue` if past, empty if not set.
+
+---
+
+### Shared field definitions
+
+- `release_date_line` — `📅 Release: {release_date} ({N} days away)` if future; `📅 Release: {release_date} (⚠️ overdue by {N} days)` if past; omit if not set
 - `qa_brief_emoji` — `✅` if exists, `🔴` if not
 - `qa_brief_label` — `{qa_brief_url}` or `missing`
 - `adoption_emoji` — `🟢` ready, `🟡` needs_clarification, `🔴` incomplete/missing
 - `suite_emoji` — `✅` approved, `⚠️` draft, `🔴` missing
 - `suite_label` — `approved — {test_suite_notion_url}` / `draft — {test_suite_notion_url}` / `missing`
-- `suite_scores_line` — `   {suite_verdict_emoji} {suite_verdict} | 🎯 {risk_coverage_score}% coverage | ✍️ {bdd_quality_score}% BDD`
-  if scores are available; omit if not
+- `suite_scores_line` — `   {suite_verdict_emoji} {suite_verdict} | 🎯 {risk_coverage_score}% coverage | ✍️ {bdd_quality_score}% BDD` if available; omit if not
 - `suite_verdict_emoji` — `✅` ready, `⚠️` review_first
-- `data_initiative_line` — `🎯 Jira: {data_initiative_url}` if available (look up from Notion PRD metadata or TQA epic description); omit if not found
-- `last_qe_update_line` — `{days_since_last_qe_update} days ago — {last_qe_message_summary}`
-  or `never — no QE message found in this channel`
+- `data_initiative_line` — `🎯 Jira: {data_initiative_url}` if available; omit if not found
+- `last_qe_update_line` — `{N} days ago — {last_qe_message_summary}` or `never — no QE message found`
 
-Post to `slack_channel_id`.
-
-If posting fails, note the failure and continue to the next project.
+If posting fails, note the failure and continue.
 
 ---
 
