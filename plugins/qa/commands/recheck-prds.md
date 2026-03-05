@@ -193,19 +193,17 @@ The agent returns a JSON object with the updated verdict and criteria analysis.
 results. Use the same format as `/qa:adoption-review` Step 4. Set `adoption_page_updated = true`.
 
 **If no `[ADOPTION REVIEW]` page was found:** create a new `[ADOPTION REVIEW]` subpage under the PRD (same
-format as `/qa:adoption-review` Step 4) and store its page ID as `adoption_review_page_id`. Note in the output
-that the page was missing and was recreated.
+format as `/qa:adoption-review` Step 4), store its page ID as `adoption_review_page_id`,
+set `adoption_page_updated = true`, and set `adoption_changed = false` (no prior verdict to compare against).
+Note in the output that the page was missing and was recreated.
 
 **If two or more `[ADOPTION REVIEW]` pages were found (`adoption_review_duplicate = true`):** skip the page
 update, set `adoption_page_updated = false`, and report:
-> Warning: Found {N} existing [ADOPTION REVIEW] pages under this PRD. Skipping page update - please consolidate
+> Warning: Found {N} existing [ADOPTION REVIEW] pages under this PRD. Skipping page update — please consolidate
 > them manually.
 
 Continue to Step 8 with the adoption verdict from the agent (the agent output is still valid even if the Notion
 page update is skipped).
-
-**If no `[ADOPTION REVIEW]` page was found (created from scratch):** set `adoption_page_updated = true` and
-`adoption_changed = false` (no prior verdict to compare against).
 
 If `adoption_page_updated = true`, add a note at the top of the page:
 
@@ -258,17 +256,21 @@ If a channel is found, post:
 Project moved to In Progress. Here's the updated status:
 
 {adoption_verdict_emoji} Adoption Review: {adoption_verdict}{adoption_changed_note}
-{suite_verdict_emoji} Suite verdict: {suite_verdict}
+{suite_status_line}
 
 PRD: {prd_url}
-Test Suite: {test_suite_notion_url}
+{test_suite_line}
 ```
 
 Where:
 
 - `adoption_changed_note` is `⚠️ (changed since kickoff)` if `adoption_changed = true`, empty otherwise
-- `suite_verdict_emoji` is `✅` for `ready` or `⚠️` for `review_first`
 - `adoption_verdict_emoji` is `🟢` for `ready`, `🟡` for `needs_clarification`, `🔴` for `incomplete`
+- `suite_status_line` — if `test_suite_notion_url` exists:
+  `{suite_verdict_emoji} Suite verdict: {suite_verdict}` where `suite_verdict_emoji` is `✅` for `ready`
+  or `⚠️` for `review_first`; otherwise: `⚠️ Suite verdict: skipped (Test Suite page not found)`
+- `test_suite_line` — if `test_suite_notion_url` exists: `Test Suite: {test_suite_notion_url}`;
+  otherwise: `Test Suite: not found`
 
 If no channel is found, skip the Slack post and note it in the output.
 

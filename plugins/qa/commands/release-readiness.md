@@ -27,6 +27,9 @@ You are executing the `/qa:release-readiness` command.
 
 Arguments: $ARGUMENTS
 
+If no argument was provided, stop and report:
+> Error: project name or Notion URL is required. Usage: `/qa:release-readiness <project_name_or_notion_url>`
+
 Parse the first argument:
 
 - If it looks like a Notion URL (`https://notion.so/...`) — use it directly as `prd_url`
@@ -100,7 +103,8 @@ From the PRD child pages, locate and check each artifact:
   - `open_questions_count` — rows with Status = `Open` in the open questions table
   - `uncovered_requirements_count` — `UNCOVERED` entries in the coverage matrix
 - Store `test_suite_notion_url`
-- Not found: `suite_status = "missing"`
+- Not found: `suite_status = "missing"`, `open_questions_count = 0`,
+  `uncovered_requirements_count = 0`, `test_suite_notion_url = ""`
 
 ### QA Scorecard
 
@@ -149,9 +153,10 @@ Find the project Slack channel:
 1. Search for channels whose Topic contains `prd_url`
 2. Fallback: search for channels whose name matches `proj-{slugified prd_title}`
 
-If no channel found: set `slack_channel_found = false`, note the gap.
+If no channel found: set `slack_channel_found = false`, `slack_channel_id = ""`, note the gap.
 
-If found: read the last 7 days of messages from the channel.
+If found: set `slack_channel_found = true`, `slack_channel_id = <found_channel>.id`.
+Read the last 7 days of messages from the channel.
 
 Extract:
 
@@ -246,7 +251,7 @@ Where:
   past; `📅 Release date: not set` if empty
 - `qa_brief_emoji` — `✅` if exists, `🔴` if not
 - `qa_brief_label` — `exists — {qa_brief_url}` or `MISSING`
-- `adoption_emoji` — `🟢` ready, `🟡` needs_clarification, `🔴` incomplete/missing
+- `adoption_emoji` — `🟢` ready, `🟡` needs_clarification, `🔴` incomplete/missing, `⚪` unknown
 - `suite_emoji` — `✅` approved, `⚠️` draft, `🔴` missing
 - `suite_label` — `approved`, `draft — pending review`, `MISSING`
 - `suite_scores_line` — `Coverage: {risk_coverage_score}% | BDD quality: {bdd_quality_score}%` if available, empty otherwise

@@ -14,8 +14,8 @@ add a Notion comment tagging the QE.
 
 ## When to Use This Agent
 
-Invoked by `/qa:qa-kickoff` (Step 7) and `/qa:recheck-prds` (Step 8) via the Task tool. Can also be invoked by
-the standalone `/qa:suite-reviewer` command.
+Invoked by `/qa:qa-kickoff` (Step 7) and `/qa:recheck-prds` (Step 8) via the Task tool. It can also be invoked
+by the standalone `/qa:suite-reviewer` command.
 
 ## Process
 
@@ -146,6 +146,8 @@ Return a JSON object with the review results. Do not include markdown formatting
     "bdd_quality": "0-100",
     "automation_tagging": "0-100"
   },
+  "risk_coverage_score": "0-100",
+  "bdd_quality_score": "0-100",
   "risk_coverage": [
     {
       "risk_area": "Name of the risk area from QA Brief",

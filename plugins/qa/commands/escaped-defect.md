@@ -30,7 +30,10 @@ Arguments: $ARGUMENTS
 
 Parse the first argument as `days` (integer). Default: `1`.
 
-**Monday auto-detect:** If today is Monday, set `days = 3` unless the user explicitly provided a value.
+If an argument was provided but is not a positive integer, stop and report:
+> Error: `days` must be a positive integer (e.g. `/qa:escaped-defect 3`).
+
+**Monday auto-detect:** If today is Monday and no argument was provided, set `days = 3`.
 
 Calculate:
 
