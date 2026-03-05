@@ -413,7 +413,7 @@ The QA pipeline has run for this project.
 Where:
 
 - `adoption_verdict_emoji` is `🟢` for `ready`, `🟡` for `needs_clarification`, `🔴` for `incomplete`
-- `adoption_review_line` is `   Page: {adoption_review_url}` (indented with 3 spaces) if `adoption_review_url` is not empty, empty otherwise
+- `adoption_review_line` is `Page: {adoption_review_url}` (prefix with 3 spaces when rendering) if `adoption_review_url` is not empty, empty otherwise
 - `suite_verdict_emoji` is `✅` for `ready`, `⚠️` for `review_first`
 - `jira_line` is `🎯 Jira: {jira_url}` if product Jira was found/created, empty otherwise
 
