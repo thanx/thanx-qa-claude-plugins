@@ -5,7 +5,8 @@ last_verified: "2026-03-04"
 
 # QA Team Configuration
 
-This is the **single source of truth** for QA team data. All commands and agents should reference this skill instead of hardcoding values.
+This is the **single source of truth** for QA team data. All commands and agents should reference this skill
+instead of hardcoding values.
 
 ## Team Roster
 

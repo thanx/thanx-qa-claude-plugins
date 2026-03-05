@@ -2,7 +2,8 @@
 
 Claude Code plugin marketplace for the Thanx QA Chapter.
 
-This is the shared repo for QA-specific commands, agents, and skills. Build and iterate on your local machine. When something is ready to share, contribute it here.
+This is the shared repo for QA-specific commands, agents, and skills. Build and iterate on your local machine.
+When something is ready to share, contribute it here.
 
 ## Quick Start
 
@@ -14,7 +15,8 @@ claude plugin add github:thanx/thanx-qa-claude-plugins
 /qa:test-suite-prd <notion_prd_url> <jira_url>
 ```
 
-This plugin is designed to run alongside `thanx-claude-plugins`. Commands that already exist in the main plugin (like `/investigate`, `/review`, `/commit`) are not duplicated here.
+This plugin is designed to run alongside `thanx-claude-plugins`. Commands that already exist in the main plugin
+(like `/investigate`, `/review`, `/commit`) are not duplicated here.
 
 ## What's Included
 
@@ -45,9 +47,9 @@ description: Brief description of what the command does
 ---
 ```
 
-3. Write the command body with numbered steps
-4. Run `npm test` to validate structure
-5. Open a PR
+1. Write the command body with numbered steps
+2. Run `npm test` to validate structure
+3. Open a PR
 
 ### Adding a Skill
 
@@ -91,4 +93,6 @@ CircleCI runs on every push:
 
 ## Relationship with thanx-claude-plugins
 
-This repo is for **QA-specific** workflows. The main [thanx-claude-plugins](https://github.com/thanx/thanx-claude-plugins) repo contains engineering-wide commands like `/investigate`, `/review`, `/commit`, etc. Both plugins can be installed simultaneously without conflict.
+This repo is for **QA-specific** workflows. The main
+[thanx-claude-plugins](https://github.com/thanx/thanx-claude-plugins) repo contains engineering-wide commands
+like `/investigate`, `/review`, `/commit`, etc. Both plugins can be installed simultaneously without conflict.

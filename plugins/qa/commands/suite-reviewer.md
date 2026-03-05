@@ -4,9 +4,11 @@ description: Review an existing Test Suite Notion page against its PRD and QA Br
 
 # Suite Reviewer
 
-Review a Test Suite Notion page: check coverage against the QA Brief risk areas, evaluate BDD scenario quality, and assess automation tagging. Removes the `[DRAFT]` prefix from the test suite title when the review is complete.
+Review a Test Suite Notion page: check coverage against the QA Brief risk areas, evaluate BDD scenario quality,
+and assess automation tagging. Removes the `[DRAFT]` prefix from the test suite title when the review is complete.
 
-This command is the standalone version of the `suite-reviewer` pipeline agent. It fetches all context from Notion — PRD, QA Brief, and test suite content — and runs the review.
+This command is the standalone version of the `suite-reviewer` pipeline agent. It fetches all context from
+Notion — PRD, QA Brief, and test suite content — and runs the review.
 
 ## Usage
 
@@ -53,9 +55,11 @@ If the page is not accessible, stop:
 
 Use the Notion MCP to get the parent page of the test suite.
 
-Fetch the parent page and all its child pages. Consolidate content into `prd_text`. Store the PRD URL as `prd_url`.
+Fetch the parent page and all its child pages. Consolidate content into `prd_text`. Store the PRD URL as
+`prd_url`.
 
-If the parent page cannot be found or accessed, set `prd_text = ""` and note the gap — the review will proceed with limited context.
+If the parent page cannot be found or accessed, set `prd_text = ""` and note the gap — the review will proceed
+with limited context.
 
 ---
 
@@ -86,7 +90,8 @@ Pass the following four sections as the input, separated by `---SECTION---`:
 3. `qa_brief_content` (the QA Brief content, or empty string if unavailable)
 4. `test_suite_content` (the full test suite page content as formatted text)
 
-Note: section 4 contains the test suite page content rather than raw JSON. The agent will parse the scenarios from the formatted page.
+Note: section 4 contains the test suite page content rather than raw JSON. The agent will parse the scenarios
+from the formatted page.
 
 The agent will:
 

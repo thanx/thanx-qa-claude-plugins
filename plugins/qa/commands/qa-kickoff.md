@@ -1,10 +1,11 @@
 ---
-description: Run the full QA kickoff pipeline for a Notion PRD. Generates QA Brief, Adoption Review, Test Suite, Suite Review, and Scorecard Update. Finds or creates a Jira Initiative in the product project, always creates a [QA] tracking Epic in TQA, and finds or creates a Slack channel when Eng Lead is set.
+description: Run the full QA kickoff pipeline for a Notion PRD. Generates QA Brief, Adoption Review, Test Suite, Suite Review, and Scorecard Update. Creates a TQA tracking Epic and a Slack channel when Eng Lead is set.
 ---
 
 # QA Kickoff Pipeline
 
-Orchestrate the full QA kickoff for a project: five agents, with QA Brief and Adoption Review running in parallel, followed by Test Suite generation, Suite Review, and Scorecard Update.
+Orchestrate the full QA kickoff for a project: five agents, with QA Brief and Adoption Review running in
+parallel, followed by Test Suite generation, Suite Review, and Scorecard Update.
 
 ## Usage
 
@@ -65,7 +66,8 @@ If `eng_lead_name` is empty:
 
 Otherwise set `skip_external_actions = false`.
 
-> The TQA tracking Epic (Step 8b) is **not gated** by this guardrail — it is always created as internal QA tracking, regardless of whether Eng Lead is set.
+> The TQA tracking Epic (Step 8b) is **not gated** by this guardrail — it is always created as internal QA
+> tracking, regardless of whether Eng Lead is set.
 
 ---
 
@@ -73,9 +75,11 @@ Otherwise set `skip_external_actions = false`.
 
 Use the Task tool to invoke **both agents simultaneously** in a single step.
 
-**Agent 1 — QA Brief:** Run the `qa-brief` command, passing the PRD URL as the argument. The agent reads the PRD, creates the `📋 QA Brief` subpage in Notion, and returns a summary including the subpage URL and full brief content.
+**Agent 1 — QA Brief:** Run the `qa-brief` command, passing the PRD URL as the argument. The agent reads the PRD,
+creates the `📋 QA Brief` subpage in Notion, and returns a summary including the subpage URL and full brief content.
 
-**Agent 2 — Adoption Review:** Invoke the `adoption-review` agent, passing `prd_text` as the input. The agent evaluates the PRD against the 4 adoption criteria and returns a JSON object.
+**Agent 2 — Adoption Review:** Invoke the `adoption-review` agent, passing `prd_text` as the input. The agent
+evaluates the PRD against the 4 adoption criteria and returns a JSON object.
 
 Wait for both to complete, then store:
 
@@ -183,10 +187,12 @@ Apply this guardrail:
 
 - **No existing Test Suite page:** create a new subpage
 - **One `[DRAFT] Test Suite` page found:** update it in place
-- **One approved Test Suite page found (title does not start with `[DRAFT]`):** create a new `[DRAFT] Test Suite` subpage
+- **One approved Test Suite page found (title does not start with `[DRAFT]`):** create a new `[DRAFT] Test Suite`
+  subpage
 - **Multiple Test Suite pages found:** create a new subpage and note the conflict in the output
 
-When creating a new subpage, use `notion-create-pages` with `parent: { "type": "page_id", "page_id": "{prd_page_id}" }`. Do NOT use `parent_id` — it is not a valid parameter and will cause the page to be created at workspace root.
+When creating a new subpage, use `notion-create-pages` with `parent: { "type": "page_id", "page_id": "{prd_page_id}" }`.
+Do NOT use `parent_id` — it is not a valid parameter and will cause the page to be created at workspace root.
 
 When updating, use `notion-update-page` with `command: "replace_content"`.
 
@@ -272,7 +278,8 @@ After this step, the test suite title in Notion is (if `draft_removed` is true):
 
 Skip this step if `skip_external_actions = true`. Note the skip.
 
-Look for a Jira project key in the PRD metadata or content (format: `ABC-123` or a project name/link). This is the **product team's project** (e.g., DATA, INNO, BG — not TQA).
+Look for a Jira project key in the PRD metadata or content (format: `ABC-123` or a project name/link). This is
+the **product team's project** (e.g., DATA, INNO, BG — not TQA).
 
 **Normalize the project key before use:**
 
@@ -284,8 +291,10 @@ Look for a Jira project key in the PRD metadata or content (format: `ABC-123` or
 
 **Search before creating:** Query the product project for an existing epic or initiative linked to this PRD:
 
-- Search query: `project = {product_project_key} AND (summary ~ "{prd_title}" OR text ~ "{prd_url}") ORDER BY created DESC`
-- If found: use the existing issue — store its key as `jira_key` and URL as `jira_url`, then update `customfield_12289` (Test Suite link) to `test_suite_notion_url`
+- Search query: `project = {product_project_key} AND (summary ~ "{prd_title}" OR text ~ "{prd_url}")
+  ORDER BY created DESC`
+- If found: use the existing issue — store its key as `jira_key` and URL as `jira_url`, then update
+  `customfield_12289` (Test Suite link) to `test_suite_notion_url`
 - If not found: create a new Initiative with:
   - **Summary:** `QA: {prd_title}`
   - **Issue Type:** Initiative
@@ -433,7 +442,8 @@ The QA pipeline has run for this project.
 Where:
 
 - `adoption_verdict_emoji` is `🟢` for `ready`, `🟡` for `needs_clarification`, `🔴` for `incomplete`
-- `adoption_review_line` is `Page: {adoption_review_url}` (prefix with 3 spaces when rendering) if `adoption_review_url` is not empty, empty otherwise
+- `adoption_review_line` is `Page: {adoption_review_url}` (prefix with 3 spaces when rendering) if
+  `adoption_review_url` is not empty, empty otherwise
 - `suite_verdict_emoji` is `✅` for `ready`, `⚠️` for `review_first`
 - `jira_line` is `🎯 Jira: {jira_url}` if product Jira was found/created, empty otherwise
 
@@ -497,7 +507,8 @@ Where:
 - `jira_line` is `🎯 Jira: {jira_url}` if product Jira was found/created, empty otherwise
 - `tqa_line` is `📋 TQA: {tqa_url}` if TQA epic was created, empty otherwise
 - `channel_line` is `💬 Channel: #{slack_channel_name}` if found/created, empty otherwise
-- `guardrail_note` is `⚠️ Product Jira and Slack channel skipped — Eng Lead not set in PRD.` if `skip_external_actions = true`, empty otherwise
+- `guardrail_note` is `⚠️ Product Jira and Slack channel skipped — Eng Lead not set in PRD.` if
+  `skip_external_actions = true`, empty otherwise
 
 ---
 
