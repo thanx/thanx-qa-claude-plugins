@@ -70,18 +70,11 @@ Run `npm test` before every PR. Tests validate:
 ## Configuration
 
 **Source of truth:** `plugins/qa/skills/qa-team-config/SKILL.md`
-Update the skill first, then this section and the corresponding command files.
 
-Hardcoded identifiers used across commands.
+All team roster data and Slack channel IDs live in the skill file.
+Update the skill first, then update any hardcoded values in command files.
 
-### Slack User IDs
-
-| Name | Slack User ID | Used in |
-|------|---------------|---------|
-| Beatriz | `U08UEQ22H7W` | `qa-kickoff.md` (Step 9), `test-suite-prd.md` (Step 7), `qa-status-update.md` (Step 3), `release-readiness.md` (Step 5) |
-| Giovani | `U08UEQ5MJDA` | `test-suite-prd.md` (Step 7), `qa-status-update.md` (Step 3), `release-readiness.md` (Step 5) |
-| Lial | `U08HTSEURPH` | `qa-kickoff.md` (Step 9) |
-| Juliano Coimbra | `U06MDTUHKTP` | `qa-team-config` (Chapter Lead) |
+Hardcoded identifiers used across commands:
 
 ### Slack Channel IDs
 
@@ -120,8 +113,8 @@ Hardcoded identifiers used across commands.
 |----------|---------|---------|
 | `QA_SLACK_WEBHOOK_URL` | Incoming webhook for QA Slack channel notifications | `test-suite-prd.md` (Step 7) |
 
-**Update protocol:** When any value changes, update this table first,
-then update each file listed in the "Used in" column.
+**Update protocol:** When any value changes, update the SKILL.md file first,
+then update this section, then update each file listed in the "Used in" column.
 Run `grep` across `plugins/` for the old value to catch missed references.
 
 ## Error Correction Log
