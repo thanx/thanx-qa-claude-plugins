@@ -15,7 +15,7 @@ instead of hardcoding values.
 | Beatriz Souza | `U08UEQ22H7W` | QA Lead | `Beatriz-Thanx` |
 | Giovani Silva | `U08UEQ5MJDA` | QA Lead | `giovani-thanx` |
 
-**Engineering Manager:** Juliano Coimbra (`U06MDTUHKTP`)
+**Engineering Manager:** Juliano Coimbra (`U06MDTUHKTP`, GitHub: `jmcoimbra`)
 
 **Team Slack IDs (for filtering):** `U08UEQ22H7W`, `U08UEQ5MJDA`
 
