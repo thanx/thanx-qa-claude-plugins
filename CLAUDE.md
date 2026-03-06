@@ -70,28 +70,11 @@ Run `npm test` before every PR. Tests validate:
 ## Configuration
 
 **Source of truth:** `plugins/qa/skills/qa-team-config/SKILL.md`
-Update the skill first, then this section and the corresponding command files.
 
-Hardcoded identifiers used across commands.
+All team roster data and Slack channel IDs live in the skill file.
+Update the skill first, then update any hardcoded values in command files.
 
-### Manager
-
-| Name | Slack User ID | GitHub |
-|------|---------------|--------|
-| Juliano Coimbra | `U06MDTUHKTP` | `jmcoimbra` |
-
-### QA Team Members
-
-| Name | Role | Slack User ID | GitHub | Jira ID |
-|------|------|---------------|--------|---------|
-| Beatriz Souza | QA Engineer | `U08UEQ22H7W` | `Beatriz-Thanx` | BSOUZA |
-| Giovani Silva | QA Engineer | `U08UEQ5MJDA` | `giovani-thanx` | GSILVA |
-
-### Stakeholder Slack IDs
-
-| Name | Slack User ID | Used in |
-|------|---------------|---------|
-| Lial | `U08HTSEURPH` | `qa-kickoff.md` (Step 9) |
+Hardcoded identifiers used across commands:
 
 ### Slack Channel IDs
 
