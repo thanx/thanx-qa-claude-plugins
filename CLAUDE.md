@@ -113,8 +113,8 @@ Hardcoded identifiers used across commands:
 |----------|---------|---------|
 | `QA_SLACK_WEBHOOK_URL` | Incoming webhook for QA Slack channel notifications | `test-suite-prd.md` (Step 7) |
 
-**Update protocol:** When any value changes, update this table first,
-then update each file listed in the "Used in" column.
+**Update protocol:** When any value changes, update the SKILL.md file first,
+then update this section, then update each file listed in the "Used in" column.
 Run `grep` across `plugins/` for the old value to catch missed references.
 
 ## Error Correction Log
