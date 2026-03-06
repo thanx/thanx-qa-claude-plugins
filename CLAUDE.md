@@ -74,14 +74,26 @@ Update the skill first, then this section and the corresponding command files.
 
 Hardcoded identifiers used across commands.
 
-### Slack User IDs
+### Manager
+
+| Name | Slack User ID | GitHub |
+|------|---------------|--------|
+| Juliano Coimbra | `U06MDTUHKTP` | `jmcoimbra` |
+
+### QA Team Members
+
+| Name | Role | Slack User ID | GitHub | Jira ID |
+|------|------|---------------|--------|---------|
+| Beatriz Souza | QA Engineer | `U08UEQ22H7W` | `Beatriz-Thanx` | BSOUZA |
+| Giovani Silva | QA Engineer | `U08UEQ5MJDA` | `giovani-thanx` | GSILVA |
+
+### Slack User IDs (command references)
 
 | Name | Slack User ID | Used in |
 |------|---------------|---------|
 | Beatriz | `U08UEQ22H7W` | `qa-kickoff.md` (Step 9), `test-suite-prd.md` (Step 7), `qa-status-update.md` (Step 3), `release-readiness.md` (Step 5) |
 | Giovani | `U08UEQ5MJDA` | `test-suite-prd.md` (Step 7), `qa-status-update.md` (Step 3), `release-readiness.md` (Step 5) |
 | Lial | `U08HTSEURPH` | `qa-kickoff.md` (Step 9) |
-| Juliano Coimbra | `U06MDTUHKTP` | `qa-team-config` (Chapter Lead) |
 
 ### Slack Channel IDs
 
