@@ -1,6 +1,6 @@
 {
   "name": "qa",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "QA-specific workflows for test suite generation from Notion PRDs, bug triage, PR QA assessments, and QA automation patterns.",
   "author": {
     "name": "Thanx QA Chapter",
@@ -14,7 +14,10 @@
     "triage",
     "pr-check",
     "automation",
-    "quality"
+    "quality",
+    "devils-advocate",
+    "proposal-review",
+    "risk-assessment"
   ],
   "homepage": "https://github.com/thanx/thanx-qa-claude-plugins",
   "license": "MIT"
