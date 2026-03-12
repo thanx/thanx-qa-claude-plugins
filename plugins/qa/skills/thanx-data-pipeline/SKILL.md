@@ -25,18 +25,18 @@ External DBs (MySQL, PostgreSQL)
 
 ## Repositories
 
-| Repo | Purpose | Owner |
-|------|---------|-------|
-| `thanx/thanx-dbt` | dbt models: ~300 total (142 staging, 35 intermediate, 123 marts) | Data team (UJ) |
-| `thanx/thanx-looker` | LookML views (79), explores, dashboards | Data team (UJ) |
-| `thanx/thanx-snowflake` | Terraform-managed Snowflake infrastructure | Data team (UJ) |
-| `thanx-ai/data-team-workflows` | Hudson plugin: analytics workflow orchestrator (dbt + LookML + Looker) | Bailey Scoville |
+| Repo | Purpose |
+|------|---------|
+| `thanx/thanx-dbt` | dbt models for staging, transformation, and marts (~300 models across 7 domains) |
+| `thanx/thanx-looker` | LookML views, explores, and dashboards |
+| `thanx/thanx-snowflake` | Terraform-managed Snowflake infrastructure (databases, warehouses, roles) |
+| `thanx-ai/data-team-workflows` | Hudson plugin: external analytics workflow orchestrator (see Related Tools below) |
 
 ## Fivetran-Replicated Schemas (Snowflake RAW)
 
 `NUCLEUS_THANX_PRODUCTION`, `POS`, `SENDGRID`, `ORDERING_THANX_ORDERING`, `OFFER_PUBLIC`, `JIRA`, `ZENDESK`, `GITHUB`, `GOOGLE_PLAY_THANX`, `STRIPE`, `SMS_PUBLIC`, `FIVETRAN_LOG`
 
-**Not replicated:** Keystone PostgreSQL (no Fivetran connector as of 2026-03-09).
+**Not replicated:** Keystone PostgreSQL (no Fivetran connector).
 
 ## dbt Model Layers
 
@@ -51,7 +51,7 @@ External DBs (MySQL, PostgreSQL)
 | Domain | Key Models | Dashboard |
 |--------|-----------|-----------|
 | Engineering | `qa_stability` (dynamic table), `bugs_velocity_daily` (incremental), `bugs_resolver_stats`, `bugs_custom_fields` | [BUGS Dashboard (Looker 467)](https://thanx.cloud.looker.com/dashboards/467) |
-| Engineering | QA coverage, defect leakage, cycle time models | QA Dashboard (Looker PR #325 pending) |
+| Engineering | QA coverage, defect leakage, cycle time models | QA Dashboard (in progress) |
 
 ### Seed Cascade Risk
 
@@ -72,14 +72,14 @@ Modified seeds cascade through ALL downstream models via `state:modified+`. One 
 - **QA-relevant views:** bug tracking (velocity, stability, custom fields), product adoption, campaign analytics
 - **Deployment:** Branch to master via PR, validate in IDE, Content Validator check, deploy via thanx-cli
 
-## Hudson Plugin (Analytics Workflow Orchestrator)
+## Related Tools (External)
 
-Bailey Scoville's plugin for analytics work. 10 workflow branches, 19 skills, 2-tier access:
+**Hudson Plugin** — External analytics workflow orchestrator in `thanx-ai/data-team-workflows`. Not part of this repository. Provides `/hudson:*` commands for dbt/LookML/Looker workflows with 2-tier access:
 
 - **Tier 1 (Explorer):** Search Looker/dbt modeling, build dashboards from existing fields, peer review, documentation
 - **Tier 2 (Builder):** All T1 + create/modify dbt and LookML models, PRs, CI monitoring
 
-Commands: `/hudson:hudson` (orchestrator), `/hudson:implement`, `/hudson:pr`, `/hudson:bug-ticket`, `/hudson:trace` (data lineage)
+External commands: `/hudson:hudson` (orchestrator), `/hudson:implement`, `/hudson:pr`, `/hudson:bug-ticket`, `/hudson:trace` (data lineage)
 
 ## CI Pipeline (thanx-dbt)
 
