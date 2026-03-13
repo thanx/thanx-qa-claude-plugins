@@ -42,6 +42,12 @@ Calculate:
 
 ---
 
+## Data Pipeline Context
+
+Read the `thanx-data-pipeline` skill for how bug metrics flow through the Fivetran → Snowflake → dbt → Looker pipeline. Key models: `qa_stability`, `bugs_velocity_daily`, `bugs_resolver_stats`, `bugs_custom_fields`. This context helps classify whether an escaped defect impacted data pipeline integrity or QA dashboard accuracy.
+
+---
+
 ## Step 2: Fetch Bugs from the BUGS Jira Project
 
 Query the BUGS Jira project for issues created in the period:
