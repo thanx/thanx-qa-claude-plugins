@@ -48,6 +48,12 @@ Arguments: $ARGUMENTS
 
 ---
 
+## Data Pipeline Context
+
+Read the `thanx-data-pipeline` skill when project artifacts reference data models, dashboards, or pipeline changes. The skill documents the full Fivetran → Snowflake → dbt → Looker pipeline and QA-relevant models used in the BUGS Dashboard.
+
+---
+
 ## Step 2: For Each Project — Read Current State from Notion
 
 For each project in scope:

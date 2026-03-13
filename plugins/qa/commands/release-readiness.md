@@ -55,6 +55,12 @@ If exactly one match: proceed with that project's Notion URL as `prd_url`.
 
 ---
 
+## Data Pipeline Context
+
+Read the `thanx-data-pipeline` skill when the project under review touches data models, reporting dashboards, or metrics pipelines. Understanding the Fivetran → Snowflake → dbt → Looker flow helps assess whether open bugs or test gaps affect downstream data integrity.
+
+---
+
 ## Step 2: Read the PRD and Extract Project Metadata
 
 Fetch the PRD page using the Notion MCP. Extract:

@@ -1,6 +1,6 @@
 {
   "name": "thanx-qa-claude-plugins",
-  "version": "0.1.0",
+  "version": "0.6.0",
   "description": "Thanx QA Chapter - Claude Code Plugin Marketplace",
   "private": true,
   "type": "module",
